@@ -55,9 +55,9 @@ Thumbs.db
 # ARCHIVOS DE CREDENCIALES (SEGURIDAD)
 # ========================================
 # NOTA: .credentials está comentado para compartir con el equipo
-# En producción, descomentar esta línea:
+# En producción, descomentar estas líneas:
 # .credentials
-*.credentials
+# *.credentials
 credentials.txt
 
 # ========================================
