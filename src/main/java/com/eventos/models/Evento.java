@@ -195,13 +195,3 @@ public class Evento {
         this.aforoActual += cantidad;
     }
 }
-
-/**
- * Estados posibles de un evento
- */
-enum EstadoEvento {
-    PLANIFICADO,
-    ACTIVO,
-    CANCELADO,
-    FINALIZADO
-}

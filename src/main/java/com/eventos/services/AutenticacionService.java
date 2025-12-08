@@ -200,4 +200,13 @@ public class AutenticacionService {
             throw new AutenticacionException("No tiene permisos de administrador para realizar esta acción");
         }
     }
+    
+    /**
+     * Cierra la sesión del usuario actual.
+     */
+    public void cerrarSesion() {
+        logger.info("Cerrando sesión del usuario: {}", 
+            usuarioActual != null ? usuarioActual.getEmail() : "ninguno");
+        this.usuarioActual = null;
+    }
 }

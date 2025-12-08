@@ -338,30 +338,27 @@ public class RegistroController {
     }
 
     /**
-     * Carga el dashboard principal después del registro exitoso.
+     * Carga la vista de eventos después del registro exitoso.
+     * Los usuarios nuevos siempre tendrán rol de Usuario (no Admin).
      */
     private void cargarDashboard() {
         try {
+            // Los nuevos usuarios siempre son rol Usuario, cargar vista de búsqueda
             FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/fxml/dashboard.fxml")
+                getClass().getResource("/fxml/eventos_usuario.fxml")
             );
-            Parent dashboardRoot = loader.load();
-
-            // Inicializar el dashboard con el usuario actual
-            DashboardController dashboardController = loader.getController();
-            dashboardController.inicializarConUsuario(
-                autenticacionService.getUsuarioActual()
-            );
+            Parent eventosRoot = loader.load();
 
             // Cambiar la escena
             Stage stage = (Stage) registrarButton.getScene().getWindow();
-            Scene scene = new Scene(dashboardRoot);
+            Scene scene = new Scene(eventosRoot);
             stage.setScene(scene);
-            stage.setTitle("Sistema de Gestión de Eventos - Dashboard");
+            stage.setTitle("Sistema de Gestión de Eventos");
+            stage.setMaximized(true);
             stage.show();
 
         } catch (IOException e) {
-            mostrarError("Error al cargar el dashboard: " + e.getMessage());
+            mostrarError("Error al cargar la pantalla principal: " + e.getMessage());
             e.printStackTrace();
         }
     }

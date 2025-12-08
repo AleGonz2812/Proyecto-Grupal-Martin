@@ -237,27 +237,34 @@ public class LoginController {
     }
     
     /**
-     * Carga el dashboard principal tras un login exitoso
-     * Cierra la ventana de login y abre la ventana principal
+     * Carga la vista de eventos según el rol del usuario tras un login exitoso
+     * Admin: Vista de gestión de eventos
+     * Usuario: Vista de búsqueda y compra de eventos
      * 
      * @param usuario Usuario autenticado
      */
     private void cargarDashboard(Usuario usuario) {
         try {
-            logger.info("Cargando dashboard principal...");
+            logger.info("Cargando vista de eventos para rol: {}", usuario.getRol().getNombre());
             
-            // Cargar el archivo FXML del dashboard
-            FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/fxml/dashboard.fxml")
-            );
+            // Determinar qué vista cargar según el rol
+            String vistaFXML;
+            String titulo;
+            
+            if (authService.esAdministrador()) {
+                vistaFXML = "/fxml/eventos_admin.fxml";
+                titulo = "Gestión de Eventos - Administrador";
+            } else {
+                vistaFXML = "/fxml/eventos_usuario.fxml";
+                titulo = "Sistema de Gestión de Eventos";
+            }
+            
+            // Cargar el archivo FXML correspondiente
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(vistaFXML));
             Parent root = loader.load();
             
-            // Obtener el controlador del dashboard y pasarle el usuario
-            DashboardController controller = loader.getController();
-            controller.inicializarConUsuario(usuario);
-            
-            // Crear nueva escena con el dashboard
-            Scene scene = new Scene(root, 1200, 800);
+            // Crear nueva escena
+            Scene scene = new Scene(root, 1400, 900);
             
             // Cargar CSS
             try {
@@ -270,13 +277,13 @@ public class LoginController {
             // Obtener el Stage actual (ventana) y cambiar la escena
             Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.setScene(scene);
-            stage.setTitle("Sistema de Gestión de Eventos - " + usuario.getNombre());
-            stage.centerOnScreen();
+            stage.setTitle(titulo);
+            stage.setMaximized(true); // Maximizar ventana
             
-            logger.info("Dashboard cargado correctamente");
+            logger.info("Vista de eventos cargada correctamente: {}", vistaFXML);
             
         } catch (IOException e) {
-            logger.error("Error al cargar el dashboard", e);
+            logger.error("Error al cargar la vista de eventos", e);
             mostrarError("Error al cargar la pantalla principal");
         }
     }

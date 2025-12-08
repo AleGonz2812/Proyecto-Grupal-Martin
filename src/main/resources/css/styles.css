@@ -352,6 +352,146 @@
 /* ==================== PROGRESS BAR ==================== */
 
 .progress-bar {
+    -fx-accent: #3498db;
+}
+
+/* ==================== ESTILOS PARA VISTAS DE EVENTOS ==================== */
+
+/* Barra de búsqueda grande */
+.search-field {
+    -fx-background-color: white;
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 2;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 10;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+}
+
+.search-field:focused {
+    -fx-border-color: #3498db;
+    -fx-effect: dropshadow(gaussian, rgba(52, 152, 219, 0.3), 8, 0, 0, 0);
+}
+
+/* Botón de búsqueda */
+.search-button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    -fx-font-size: 18px;
+}
+
+.search-button:hover {
+    -fx-background-color: #2980b9;
+}
+
+/* Botón de menú hamburguesa */
+.menu-button {
+    -fx-background-color: white;
+    -fx-text-fill: #2c3e50;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+.menu-button:hover {
+    -fx-background-color: #ecf0f1;
+}
+
+/* Botón de avatar */
+.avatar-button {
+    -fx-background-color: white;
+    -fx-background-radius: 50%;
+    -fx-cursor: hand;
+}
+
+.avatar-button:hover {
+    -fx-background-color: #ecf0f1;
+}
+
+.avatar-icon {
+    -fx-text-fill: #3498db;
+}
+
+/* Barra de filtros */
+.filter-bar {
+    -fx-background-color: #34495e;
+}
+
+.filter-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-border-color: white;
+    -fx-border-width: 2;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-padding: 8 15 8 15;
+}
+
+.filter-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Mapa placeholder */
+.map-container {
+    -fx-background-color: #d5dbdb;
+}
+
+.map-placeholder {
+    -fx-text-fill: #7f8c8d;
+    -fx-background-color: transparent;
+}
+
+/* Contenedor de lista de eventos */
+.events-list-container {
+    -fx-background-color: white;
+}
+
+/* Título de sección */
+.section-title {
+    -fx-text-fill: #2c3e50;
+    -fx-font-weight: bold;
+}
+
+/* Panel de contenido */
+.content-pane {
+    -fx-background-color: #ecf0f1;
+}
+
+/* Botones del menú lateral */
+.menu-item-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-alignment: CENTER_LEFT;
+    -fx-font-size: 14px;
+    -fx-padding: 12 15 12 15;
+    -fx-cursor: hand;
+    -fx-background-radius: 5;
+}
+
+.menu-item-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Título del sidebar */
+.sidebar-title {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Etiqueta de información */
+.info-label {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 12px;
+    -fx-font-style: italic;
+}
+
+
+.progress-bar {
     -fx-background-color: #ecf0f1;
     -fx-background-radius: 5;
 }

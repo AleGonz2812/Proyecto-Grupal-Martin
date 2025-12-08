@@ -194,13 +194,41 @@ public class DashboardController {
     
     /**
      * Maneja el clic en "Eventos"
-     * TODO: Cargar vista de catálogo de eventos
+     * Carga la vista de eventos según el rol del usuario
      */
     @FXML
     private void handleEventos() {
         logger.info("Navegando a: Eventos");
-        mostrarMensajeEnDesarrollo("Catálogo de Eventos");
-        // TODO: cargarVista("/fxml/eventos/lista-eventos.fxml");
+        
+        try {
+            String vistaFXML;
+            String titulo;
+            
+            // Determinar qué vista cargar según el rol
+            if (authService.esAdministrador()) {
+                vistaFXML = "/fxml/eventos_admin.fxml";
+                titulo = "Gestión de Eventos - Administrador";
+            } else {
+                vistaFXML = "/fxml/eventos_usuario.fxml";
+                titulo = "Catálogo de Eventos";
+            }
+            
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(vistaFXML));
+            Parent eventosView = loader.load();
+            
+            // Cambiar a la nueva vista
+            Stage stage = (Stage) logoutButton.getScene().getWindow();
+            Scene scene = new Scene(eventosView);
+            stage.setScene(scene);
+            stage.setTitle("Sistema de Gestión de Eventos - " + titulo);
+            stage.show();
+            
+            logger.info("Vista de eventos cargada: {}", vistaFXML);
+            
+        } catch (IOException e) {
+            logger.error("Error al cargar vista de eventos", e);
+            mostrarError("Error al cargar vista", "No se pudo cargar la vista de eventos: " + e.getMessage());
+        }
     }
     
     /**
