@@ -1,0 +1,79 @@
+# ========================================
+# ARCHIVOS DE MAVEN
+# ========================================
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# ========================================
+# ARCHIVOS DE INTELLIJ IDEA
+# ========================================
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# ========================================
+# ARCHIVOS DE ECLIPSE
+# ========================================
+.classpath
+.project
+.settings/
+bin/
+
+# ========================================
+# ARCHIVOS DE VSCODE
+# ========================================
+.vscode/
+
+# ========================================
+# ARCHIVOS DE NETBEANS
+# ========================================
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# ========================================
+# ARCHIVOS DE SISTEMA
+# ========================================
+.DS_Store
+Thumbs.db
+*.log
+
+# ========================================
+# ARCHIVOS DE CREDENCIALES (SEGURIDAD)
+# ========================================
+.credentials
+*.credentials
+credentials.txt
+
+# ========================================
+# ARCHIVOS GENERADOS
+# ========================================
+logs/
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# ========================================
+# ARCHIVOS TEMPORALES
+# ========================================
+*.tmp
+*.bak
+*.swp
+*~.nib

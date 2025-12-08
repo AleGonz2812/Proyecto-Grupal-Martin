@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<!--
+    Vista de Login (Inicio de Sesión)
+    
+    Componentes principales:
+    - Campo de texto para email
+    - Campo de contraseña (oculta los caracteres)
+    - Botón de iniciar sesión
+    - Enlace para registro (futuro)
+    - Etiqueta para mostrar mensajes de error
+    
+    El controlador asociado es: LoginController.java
+-->
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.eventos.controllers.LoginController"
+      alignment="CENTER"
+      spacing="20"
+      styleClass="login-container"
+      stylesheets="@../css/styles.css">
+    
+    <!-- Padding: espacio interno del contenedor -->
+    <padding>
+        <Insets top="40" right="40" bottom="40" left="40"/>
+    </padding>
+    
+    <!-- TÍTULO DE LA APLICACIÓN -->
+    <VBox alignment="CENTER" spacing="10">
+        <Text text="Sistema de Gestión de Eventos"
+              styleClass="title">
+            <font>
+                <Font name="System Bold" size="24"/>
+            </font>
+        </Text>
+        
+        <Text text="Iniciar Sesión"
+              styleClass="subtitle">
+            <font>
+                <Font size="16"/>
+            </font>
+        </Text>
+    </VBox>
+    
+    <!-- SEPARADOR VISUAL -->
+    <Separator prefWidth="300"/>
+    
+    <!-- FORMULARIO DE LOGIN -->
+    <VBox spacing="15" alignment="CENTER" styleClass="form-container">
+        
+        <!-- Campo de Email -->
+        <VBox spacing="5">
+            <Label text="Email:" styleClass="form-label">
+                <font>
+                    <Font name="System Bold" size="12"/>
+                </font>
+            </Label>
+            <TextField fx:id="emailField"
+                       promptText="correo@ejemplo.com"
+                       prefWidth="300"
+                       styleClass="form-field"/>
+        </VBox>
+        
+        <!-- Campo de Contraseña con botón ver/ocultar -->
+        <VBox spacing="5">
+            <Label text="Contraseña:" styleClass="form-label">
+                <font>
+                    <Font name="System Bold" size="12"/>
+                </font>
+            </Label>
+            <StackPane>
+                <PasswordField fx:id="passwordField"
+                              promptText="********"
+                              prefWidth="300"
+                              styleClass="form-field"
+                              onAction="#handleLogin"/>
+                <!-- onAction="#handleLogin" permite hacer login con Enter -->
+                
+                <!-- Campo de texto visible (oculto por defecto) -->
+                <TextField fx:id="passwordVisibleField"
+                          promptText="********"
+                          prefWidth="300"
+                          styleClass="form-field"
+                          visible="false"
+                          managed="false"
+                          onAction="#handleLogin"/>
+                
+                <!-- Botón para mostrar/ocultar contraseña -->
+                <Button fx:id="togglePasswordButton"
+                       text="👁"
+                       onAction="#togglePasswordVisibility"
+                       prefWidth="40"
+                       prefHeight="30"
+                       StackPane.alignment="CENTER_RIGHT"
+                       style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 16;">
+                    <StackPane.margin>
+                        <Insets right="5"/>
+                    </StackPane.margin>
+                </Button>
+            </StackPane>
+        </VBox>
+        
+        <!-- Etiqueta para mostrar errores -->
+        <Label fx:id="errorLabel"
+               text=""
+               textFill="RED"
+               wrapText="true"
+               maxWidth="300"
+               visible="false"
+               styleClass="error-label">
+            <font>
+                <Font size="11"/>
+            </font>
+        </Label>
+        
+        <!-- Botón de Iniciar Sesión -->
+        <Button fx:id="loginButton"
+                text="Iniciar Sesión"
+                onAction="#handleLogin"
+                prefWidth="300"
+                prefHeight="40"
+                defaultButton="true"
+                styleClass="primary-button">
+            <font>
+                <Font name="System Bold" size="14"/>
+            </font>
+        </Button>
+        
+        <!-- Separador -->
+        <Separator prefWidth="300"/>
+        
+        <!-- Enlace de registro -->
+        <HBox alignment="CENTER" spacing="5">
+            <Label text="¿No tienes cuenta?" styleClass="link-label">
+                <font>
+                    <Font size="12"/>
+                </font>
+            </Label>
+            <Hyperlink fx:id="registerLink"
+                      text="Regístrate aquí"
+                      onAction="#handleRegistro"
+                      styleClass="hyperlink">
+                <font>
+                    <Font name="System Bold" size="12"/>
+                </font>
+            </Hyperlink>
+        </HBox>
+    </VBox>
+    
+    <!-- PIE DE PÁGINA -->
+    <VBox alignment="CENTER" spacing="5" VBox.vgrow="ALWAYS">
+        <VBox.margin>
+            <Insets top="20"/>
+        </VBox.margin>
+        
+        <Text text="Versión 1.0.0" styleClass="footer-text">
+            <font>
+                <Font size="10"/>
+            </font>
+        </Text>
+    </VBox>
+    
+</VBox>
