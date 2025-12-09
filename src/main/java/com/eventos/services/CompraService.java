@@ -78,6 +78,10 @@ public class CompraService {
                 entrada.setTipoEntrada(tipoEntrada);
                 entrada.setEvento(evento);
                 entrada.setCompra(compra);
+                
+                // Generar número de entrada único
+                String numeroEntrada = "ENT-" + System.currentTimeMillis() + "-" + (int)(Math.random() * 10000);
+                entrada.setNumeroEntrada(numeroEntrada);
 
                 String payload = buildPayload(evento, compra, usuario, tipoEntrada);
                 String qrBase64 = qrService.generarQRBase64(payload, 250);

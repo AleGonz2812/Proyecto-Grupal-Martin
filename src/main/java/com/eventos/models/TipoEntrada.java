@@ -86,4 +86,9 @@ public class TipoEntrada {
     public void setBeneficios(String beneficios) {
         this.beneficios = beneficios;
     }
+    
+    @Override
+    public String toString() {
+        return nombre + " - $" + precio;
+    }
 }

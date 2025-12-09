@@ -367,60 +367,145 @@ public class EventosUsuarioController {
             mostrarError("Debes iniciar sesión para comprar");
             return;
         }
+        
+        // Verificar disponibilidad del evento
+        if (!evento.hayDisponibilidad()) {
+            mostrarError("Este evento no tiene entradas disponibles");
+            return;
+        }
 
         Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Comprar entradas");
-        dialog.setHeaderText(evento.getNombre());
+        dialog.setTitle("Comprar entradas - " + evento.getNombre());
+        dialog.setHeaderText("🎫 Información del Evento");
 
         ButtonType comprarBtn = new ButtonType("Comprar", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(comprarBtn, ButtonType.CANCEL);
 
+        // Componentes del formulario
         ChoiceBox<TipoEntrada> tipoChoice = new ChoiceBox<>();
         Spinner<Integer> cantidadSpinner = new Spinner<>(1, 10, 1);
-        Label totalLabel = new Label("Total: -");
-        Label precioUnitLabel = new Label();
+        cantidadSpinner.setEditable(true);
+        Label totalLabel = new Label("Total: $0.00");
+        totalLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #27ae60;");
+        Label precioUnitLabel = new Label("$0.00");
+        Label disponibilidadLabel = new Label();
+        Label descripcionTipoLabel = new Label();
+        descripcionTipoLabel.setWrapText(true);
+        descripcionTipoLabel.setMaxWidth(300);
+        descripcionTipoLabel.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 11px; -fx-font-style: italic;");
 
+        // Cargar tipos de entrada
         try {
-            List<TipoEntrada> tipos = tipoEntradaRepository.findAll();
-            tipoChoice.getItems().addAll(tipos);
-            if (!tipos.isEmpty()) {
-                tipoChoice.setValue(tipos.get(0));
+            List<TipoEntrada> tipos = tipoEntradaRepository.findAll().stream()
+                .filter(t -> t.getActivo() != null && t.getActivo())
+                .toList();
+            
+            if (tipos.isEmpty()) {
+                mostrarError("No hay tipos de entrada disponibles para este evento");
+                return;
             }
+            
+            tipoChoice.getItems().addAll(tipos);
+            tipoChoice.setValue(tipos.get(0));
         } catch (Exception e) {
-            mostrarError("No se pudieron cargar los tipos de entrada");
+            mostrarError("No se pudieron cargar los tipos de entrada: " + e.getMessage());
             return;
         }
 
-        tipoChoice.getSelectionModel().selectedItemProperty().addListener((obs, old, sel) -> actualizarTotales(sel, cantidadSpinner.getValue(), totalLabel, precioUnitLabel));
-        cantidadSpinner.valueProperty().addListener((obs, old, val) -> actualizarTotales(tipoChoice.getValue(), val, totalLabel, precioUnitLabel));
-        actualizarTotales(tipoChoice.getValue(), cantidadSpinner.getValue(), totalLabel, precioUnitLabel);
+        // Actualizar información del aforo disponible
+        int aforoDisponible = evento.getAforoMaximo() - evento.getAforoActual();
+        disponibilidadLabel.setText("Disponibles: " + aforoDisponible + " de " + evento.getAforoMaximo());
+        disponibilidadLabel.setStyle("-fx-text-fill: " + (aforoDisponible < 10 ? "#e74c3c" : "#3498db") + "; -fx-font-weight: bold;");
+        
+        // Actualizar límite del spinner según disponibilidad
+        cantidadSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, Math.min(10, aforoDisponible), 1));
 
+        // Listeners para actualizar totales
+        tipoChoice.getSelectionModel().selectedItemProperty().addListener((obs, old, sel) -> {
+            actualizarTotales(sel, cantidadSpinner.getValue(), totalLabel, precioUnitLabel);
+            if (sel != null && sel.getDescripcion() != null && !sel.getDescripcion().isEmpty()) {
+                descripcionTipoLabel.setText("ℹ️ " + sel.getDescripcion());
+                if (sel.getBeneficios() != null && !sel.getBeneficios().isEmpty()) {
+                    descripcionTipoLabel.setText(descripcionTipoLabel.getText() + "\n✨ " + sel.getBeneficios());
+                }
+            } else {
+                descripcionTipoLabel.setText("");
+            }
+        });
+        
+        cantidadSpinner.valueProperty().addListener((obs, old, val) -> {
+            actualizarTotales(tipoChoice.getValue(), val, totalLabel, precioUnitLabel);
+        });
+        
+        // Actualizar valores iniciales
+        actualizarTotales(tipoChoice.getValue(), cantidadSpinner.getValue(), totalLabel, precioUnitLabel);
+        TipoEntrada inicial = tipoChoice.getValue();
+        if (inicial != null && inicial.getDescripcion() != null && !inicial.getDescripcion().isEmpty()) {
+            descripcionTipoLabel.setText("ℹ️ " + inicial.getDescripcion());
+            if (inicial.getBeneficios() != null && !inicial.getBeneficios().isEmpty()) {
+                descripcionTipoLabel.setText(descripcionTipoLabel.getText() + "\n✨ " + inicial.getBeneficios());
+            }
+        }
+
+        // Crear grid con información
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
-        grid.add(new Label("Tipo de entrada:"), 0, 0);
-        grid.add(tipoChoice, 1, 0);
-        grid.add(new Label("Cantidad:"), 0, 1);
-        grid.add(cantidadSpinner, 1, 1);
-        grid.add(new Label("Precio unitario:"), 0, 2);
-        grid.add(precioUnitLabel, 1, 2);
-        grid.add(totalLabel, 1, 3);
+        grid.setStyle("-fx-padding: 20;");
+        
+        // Información del evento
+        Label eventoInfo = new Label("📅 " + evento.getFechaInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+        eventoInfo.setStyle("-fx-font-size: 13px; -fx-text-fill: #34495e;");
+        Label sedeInfo = new Label("📍 " + evento.getSede().getNombre() + " - " + evento.getSede().getCiudad());
+        sedeInfo.setStyle("-fx-font-size: 13px; -fx-text-fill: #34495e;");
+        
+        grid.add(eventoInfo, 0, 0, 2, 1);
+        grid.add(sedeInfo, 0, 1, 2, 1);
+        grid.add(disponibilidadLabel, 0, 2, 2, 1);
+        
+        Separator separator = new Separator();
+        grid.add(separator, 0, 3, 2, 1);
+        
+        grid.add(new Label("Tipo de entrada:"), 0, 4);
+        grid.add(tipoChoice, 1, 4);
+        grid.add(descripcionTipoLabel, 0, 5, 2, 1);
+        grid.add(new Label("Cantidad:"), 0, 6);
+        grid.add(cantidadSpinner, 1, 6);
+        grid.add(new Label("Precio unitario:"), 0, 7);
+        grid.add(precioUnitLabel, 1, 7);
+        
+        Separator separator2 = new Separator();
+        grid.add(separator2, 0, 8, 2, 1);
+        
+        grid.add(new Label("TOTAL:"), 0, 9);
+        grid.add(totalLabel, 1, 9);
+        
         dialog.getDialogPane().setContent(grid);
+        dialog.getDialogPane().setMinWidth(450);
 
         dialog.setResultConverter(dialogButton -> dialogButton == comprarBtn ? comprarBtn : null);
         dialog.showAndWait().ifPresent(result -> {
             TipoEntrada sel = tipoChoice.getValue();
             int cantidad = cantidadSpinner.getValue();
+            
             if (sel == null) {
                 mostrarError("Selecciona un tipo de entrada");
                 return;
             }
+            
+            if (cantidad > aforoDisponible) {
+                mostrarError("No hay suficientes entradas disponibles. Solo quedan " + aforoDisponible);
+                return;
+            }
+            
             try {
                 compraService.procesarCompra(usuarioActual.getId(), evento.getId(), sel.getId(), cantidad, "Tarjeta");
-                mostrarInfo("Compra realizada. Código de confirmación generado.");
-                cargarEventos();
+                mostrarInfo("✅ Compra realizada exitosamente\n\n" +
+                           "Se han generado " + cantidad + " entrada(s) con código QR.\n" +
+                           "Puedes ver tus entradas en la sección 'Mis Compras'.");
+                cargarEventos(); // Recargar para actualizar aforo
             } catch (Exception e) {
-                mostrarError("No se pudo completar la compra: " + e.getMessage());
+                mostrarError("❌ Error al procesar la compra:\n" + e.getMessage());
             }
         });
     }
