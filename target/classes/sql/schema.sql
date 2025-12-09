@@ -75,8 +75,8 @@ CREATE TABLE IF NOT EXISTS sedes (
     activa BOOLEAN NOT NULL DEFAULT TRUE,
     telefono VARCHAR(20),
     descripcion TEXT,
-    latitud DECIMAL(10,6),
-    longitud DECIMAL(10,6),
+    latitud DECIMAL(10, 7),
+    longitud DECIMAL(10, 7),
     INDEX idx_ciudad (ciudad),
     INDEX idx_activa (activa)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -164,7 +164,7 @@ CREATE TABLE IF NOT EXISTS entradas (
     numero_entrada VARCHAR(50) UNIQUE NOT NULL,
     validada BOOLEAN NOT NULL DEFAULT FALSE,
     fecha_validacion DATETIME,
-    codigo_qr VARCHAR(500) UNIQUE,
+    codigo_qr TEXT,
     FOREIGN KEY (tipo_entrada_id) REFERENCES tipos_entrada(id),
     FOREIGN KEY (evento_id) REFERENCES eventos(id),
     FOREIGN KEY (compra_id) REFERENCES compras(id) ON DELETE CASCADE,

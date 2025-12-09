@@ -245,10 +245,10 @@ public class RegistroController {
 
             // Determinar el rol según el checkbox
             boolean esAdmin = esAdminCheckBox != null && esAdminCheckBox.isSelected();
-            String rolNombre = esAdmin ? "ADMIN" : "USUARIO";
-
-            Rol rol = rolRepository.findByNombre(rolNombre)
-                .orElseThrow(() -> new ValidationException("No se encontró el rol " + rolNombre + ". Ejecuta la app una vez para inicializar datos."));
+            Long rolId = esAdmin ? 1L : 2L; // 1 = Admin, 2 = Usuario
+            
+            Rol rol = rolRepository.findById(rolId)
+                .orElseThrow(() -> new ValidationException("No se encontró el rol"));
 
             // Crear nuevo usuario
             Usuario nuevoUsuario = new Usuario();
@@ -360,10 +360,9 @@ public class RegistroController {
             Stage stage = (Stage) registrarButton.getScene().getWindow();
             Scene scene = new Scene(eventosRoot);
             stage.setScene(scene);
-            stage.setTitle("Sistema de Gestión de Eventos");
-            stage.setWidth(1280);
-            stage.setHeight(800);
-            stage.centerOnScreen();
+            stage.setTitle("Sistema de Gesti\u00f3n de Eventos");
+            stage.setResizable(true);
+            stage.setMaximized(true);
             stage.show();
 
         } catch (IOException e) {
@@ -394,9 +393,11 @@ public class RegistroController {
             Parent loginRoot = loader.load();
 
             Stage stage = (Stage) registrarButton.getScene().getWindow();
-            Scene scene = new Scene(loginRoot);
+            Scene scene = new Scene(loginRoot, 600, 500);
             stage.setScene(scene);
-            stage.setTitle("Sistema de Gestión de Eventos - Login");
+            stage.setTitle("Sistema de Gesti\u00f3n de Eventos - Login");
+            stage.setResizable(true);
+            stage.centerOnScreen();
             stage.show();
 
         } catch (IOException e) {

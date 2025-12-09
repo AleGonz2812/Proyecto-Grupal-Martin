@@ -10,8 +10,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import javafx.stage.Screen;
-import javafx.geometry.Rectangle2D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,9 +118,11 @@ public class LoginController {
             Parent registroRoot = loader.load();
 
             Stage stage = (Stage) emailField.getScene().getWindow();
-            Scene scene = new Scene(registroRoot);
+            Scene scene = new Scene(registroRoot, 900, 700);
             stage.setScene(scene);
-            stage.setTitle("Sistema de Gestión de Eventos - Registro");
+            stage.setTitle("Sistema de Gesti\u00f3n de Eventos - Registro");
+            stage.setResizable(true);
+            stage.centerOnScreen();
             stage.show();
 
         } catch (IOException e) {
@@ -266,7 +266,7 @@ public class LoginController {
             Parent root = loader.load();
             
             // Crear nueva escena
-            Scene scene = new Scene(root);
+            Scene scene = new Scene(root, 1400, 900);
             
             // Cargar CSS
             try {
@@ -278,19 +278,10 @@ public class LoginController {
             
             // Obtener el Stage actual (ventana) y cambiar la escena
             Stage stage = (Stage) loginButton.getScene().getWindow();
-            Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
-
-            double targetWidth = Math.min(1280, bounds.getWidth() * 0.95);
-            double targetHeight = Math.min(900, bounds.getHeight() * 0.9);
-
             stage.setScene(scene);
             stage.setTitle(titulo);
-            stage.setMinWidth(900);
-            stage.setMinHeight(650);
-            stage.setWidth(targetWidth);
-            stage.setHeight(targetHeight);
-            stage.setResizable(true);
-            stage.centerOnScreen();
+            stage.setResizable(true); // Permitir redimensionar
+            stage.setMaximized(true); // Maximizar ventana
             
             logger.info("Vista de eventos cargada correctamente: {}", vistaFXML);
             

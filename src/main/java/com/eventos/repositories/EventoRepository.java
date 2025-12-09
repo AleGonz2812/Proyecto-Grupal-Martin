@@ -23,6 +23,21 @@ public class EventoRepository extends GenericRepository<Evento, Long> {
     }
     
     /**
+     * Sobrescribe findAll para cargar las relaciones con JOIN FETCH
+     * @return Lista de todos los eventos con sus relaciones cargadas
+     */
+    @Override
+    public List<Evento> findAll() {
+        EntityManager em = getEntityManager();
+        TypedQuery<Evento> query = em.createQuery(
+            "SELECT DISTINCT e FROM Evento e " +
+            "LEFT JOIN FETCH e.tipoEvento " +
+            "LEFT JOIN FETCH e.sede " +
+            "ORDER BY e.fechaInicio DESC", Evento.class);
+        return query.getResultList();
+    }
+    
+    /**
      * Busca eventos por tipo de evento
      * @param tipoEventoId ID del tipo de evento
      * @return Lista de eventos de ese tipo

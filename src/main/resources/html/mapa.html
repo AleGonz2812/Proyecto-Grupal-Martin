@@ -119,36 +119,51 @@
             markerZoomAnimation: false
         });
         
-        // Añadir capa de OpenStreetMap
+        // Añadir capa de OpenStreetMap con configuración optimizada para WebView
         const baseLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap',
-            updateWhenIdle: true
+            updateWhenIdle: false,
+            updateWhenZooming: false,
+            keepBuffer: 8
         }).addTo(map);
         
         console.log('Mapa creado y tiles agregados');
         
-        map.whenReady(() => {
-            setTimeout(() => map.invalidateSize(), 120);
-        });
-
-        // Ajustar el mapa al redimensionar el contenedor (pantallas pequeñas/portátiles)
-        const reacomodarMapa = () => {
+        // Función para forzar recarga completa de teselas
+        function recargarTeselasCompleto() {
             map.invalidateSize();
-            if (typeof baseLayer.redraw === 'function') {
-                baseLayer.redraw();
-            }
-        };
-
-        window.addEventListener('resize', () => {
-            requestAnimationFrame(reacomodarMapa);
+            baseLayer.redraw();
+            
+            // Hack: remover y volver a agregar la capa fuerza la recarga
+            map.removeLayer(baseLayer);
+            baseLayer.addTo(map);
+        }
+        
+        // Inicialización agresiva para WebView de JavaFX
+        map.whenReady(() => {
+            // Múltiples intentos de recarga con diferentes delays
+            setTimeout(() => map.invalidateSize(), 100);
+            setTimeout(() => recargarTeselasCompleto(), 300);
+            setTimeout(() => recargarTeselasCompleto(), 600);
+            setTimeout(() => recargarTeselasCompleto(), 1000);
+            setTimeout(() => map.invalidateSize(), 1500);
+        });
+        
+        // También recargar cuando el documento esté completamente listo
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => recargarTeselasCompleto(), 200);
+        });
+        
+        // Y cuando la ventana termine de cargar
+        window.addEventListener('load', () => {
+            setTimeout(() => recargarTeselasCompleto(), 100);
+            setTimeout(() => recargarTeselasCompleto(), 500);
         });
 
         // Refrescar teselas al abrir/cerrar popups para evitar huecos
         const refrescarTeselas = () => {
             map.invalidateSize();
-            if (typeof baseLayer.redraw === 'function') {
-                baseLayer.redraw();
-            }
+            baseLayer.redraw();
         };
 
         map.on('popupopen', (e) => {
@@ -287,10 +302,19 @@
         
         // Función para forzar repaint (llamar desde Java después de agregar todos los marcadores)
         function forzarRepaint() {
-            map.invalidateSize();
-            setTimeout(() => {
-                map.invalidateSize();
-            }, 50);
+            recargarTeselasCompleto();
+            setTimeout(() => recargarTeselasCompleto(), 100);
+            setTimeout(() => recargarTeselasCompleto(), 300);
+        }
+        
+        // Función para forzar recarga completa del mapa (llamar desde Java al inicio)
+        function forzarRecargaInicial() {
+            console.log('Forzando recarga inicial del mapa...');
+            recargarTeselasCompleto();
+            setTimeout(() => recargarTeselasCompleto(), 200);
+            setTimeout(() => recargarTeselasCompleto(), 500);
+            setTimeout(() => recargarTeselasCompleto(), 800);
+            setTimeout(() => recargarTeselasCompleto(), 1200);
         }
         
         // Función para limpiar marcadores
@@ -324,11 +348,13 @@
         window.limpiarMarcadores = limpiarMarcadores;
         window.centrarEnEvento = centrarEnEvento;
         window.forzarRepaint = forzarRepaint;
+        window.forzarRecargaInicial = forzarRecargaInicial;
         
         console.log('Funciones expuestas a Java:', {
             agregarMarcador: typeof window.agregarMarcador,
             limpiarMarcadores: typeof window.limpiarMarcadores,
-            forzarRepaint: typeof window.forzarRepaint
+            forzarRepaint: typeof window.forzarRepaint,
+            forzarRecargaInicial: typeof window.forzarRecargaInicial
         });
     </script>
 </body>

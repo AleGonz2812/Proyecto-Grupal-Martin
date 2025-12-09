@@ -4,11 +4,14 @@ import com.eventos.exceptions.ValidationException;
 import com.eventos.models.*;
 import com.eventos.utils.QRService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -26,6 +29,8 @@ public class CompraService {
     public CompraService() {
         this.qrService = new QRService();
         this.objectMapper = new ObjectMapper();
+        this.objectMapper.registerModule(new JavaTimeModule());
+        this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
     /**
@@ -78,6 +83,10 @@ public class CompraService {
                 entrada.setTipoEntrada(tipoEntrada);
                 entrada.setEvento(evento);
                 entrada.setCompra(compra);
+                
+                // Generar número de entrada único
+                String numeroEntrada = "ENT-" + System.currentTimeMillis() + "-" + (int)(Math.random() * 10000);
+                entrada.setNumeroEntrada(numeroEntrada);
 
                 String payload = buildPayload(evento, compra, usuario, tipoEntrada);
                 String qrBase64 = qrService.generarQRBase64(payload, 250);
@@ -125,8 +134,8 @@ public class CompraService {
             data.put("codigoConfirmacion", compra.getCodigoConfirmacion());
             data.put("usuario", usuario.getEmail());
             data.put("evento", evento.getNombre());
-            data.put("fechaEvento", evento.getFechaInicio());
-            data.put("total", compra.getTotal());
+            data.put("fechaEvento", evento.getFechaInicio().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+            data.put("total", compra.getTotal().toString());
             return objectMapper.writeValueAsString(data);
         } catch (Exception e) {
             throw new RuntimeException("No se pudo generar JSON de confirmación", e);

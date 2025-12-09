@@ -18,18 +18,17 @@
     
     El controlador asociado es: LoginController.java
 -->
-<VBox xmlns="http://javafx.com/javafx/17"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.eventos.controllers.LoginController"
-      alignment="CENTER"
-      spacing="20"
-      styleClass="login-container"
-      stylesheets="@../css/styles.css">
+<StackPane xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.eventos.controllers.LoginController"
+           styleClass="root"
+           stylesheets="@../css/styles.css">
     
-    <!-- Padding: espacio interno del contenedor -->
-    <padding>
-        <Insets top="40" right="40" bottom="40" left="40"/>
-    </padding>
+    <VBox alignment="CENTER" spacing="20" styleClass="login-container">
+        <!-- Padding: espacio interno del contenedor -->
+        <padding>
+            <Insets top="40" right="40" bottom="40" left="40"/>
+        </padding>
     
     <!-- TÍTULO DE LA APLICACIÓN -->
     <VBox alignment="CENTER" spacing="10">
@@ -166,4 +165,5 @@
         </Text>
     </VBox>
     
-</VBox>
+    </VBox>
+</StackPane>

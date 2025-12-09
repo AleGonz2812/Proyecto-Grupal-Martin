@@ -159,12 +159,11 @@
 
         <!-- Checkbox Registrar como Administrador -->
         <HBox spacing="10" alignment="CENTER_LEFT">
-            <CheckBox fx:id="esAdminCheckBox" styleClass="form-checkbox"/>
-            <Label text="Registrar como Administrador" styleClass="form-label">
-                <font>
-                    <Font size="12"/>
-                </font>
-            </Label>
+            <CheckBox fx:id="esAdminCheckBox"
+                      text="Registrar como Administrador"
+                      styleClass="form-checkbox"
+                      focusTraversable="true"
+                      mnemonicParsing="false"/>
         </HBox>
 
         <!-- Mensaje de Error -->

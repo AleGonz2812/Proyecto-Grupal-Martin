@@ -1,14 +1,11 @@
 package com.eventos;
 
 import com.eventos.config.HibernateUtil;
-import com.eventos.config.DatabaseInitializer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.Screen;
-import javafx.geometry.Rectangle2D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,9 +64,6 @@ public class Main extends Application {
             logger.info("Inicializando conexión a base de datos...");
             HibernateUtil.getEntityManagerFactory();
             logger.info("✓ Conexión a base de datos establecida correctamente");
-
-            // Sembrar datos mínimos para evitar errores en instalaciones nuevas
-            new DatabaseInitializer().initialize();
             
         } catch (Exception e) {
             logger.error("✗ Error al inicializar la base de datos", e);
@@ -99,7 +93,7 @@ public class Main extends Application {
             Parent root = loader.load();
             
             // Crear la escena con el contenido del login
-            Scene scene = new Scene(root, 400, 600);
+            Scene scene = new Scene(root, 600, 500);
             
             // Cargar estilos CSS
             try {
@@ -111,16 +105,10 @@ public class Main extends Application {
             }
             
             // Configurar la ventana principal
-            Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
-
             primaryStage.setTitle("Sistema de Gestión de Eventos - Login");
             primaryStage.setScene(scene);
-            primaryStage.setMinWidth(360);
-            primaryStage.setMinHeight(520);
-            primaryStage.setWidth(Math.min(480, bounds.getWidth() * 0.8));
-            primaryStage.setHeight(Math.min(720, bounds.getHeight() * 0.85));
-            primaryStage.setResizable(true);
-            primaryStage.centerOnScreen();
+            primaryStage.setResizable(true); // Permitir redimensionar
+            primaryStage.centerOnScreen();    // Centrar en pantalla
             
             // Mostrar la ventana
             primaryStage.show();

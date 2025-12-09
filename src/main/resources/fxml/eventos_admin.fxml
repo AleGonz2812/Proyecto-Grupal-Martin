@@ -114,6 +114,19 @@
                         <Font name="System Bold" size="13"/>
                     </font>
                 </Button>
+
+                <!-- Espaciador -->
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button text="🏢 Administrar Sedes"
+                       onAction="#handleAdministrarSedes"
+                       styleClass="info-button"
+                       prefHeight="40"
+                       prefWidth="180">
+                    <font>
+                        <Font name="System Bold" size="13"/>
+                    </font>
+                </Button>
             </HBox>
 
             <!-- Mapa y Tabla -->

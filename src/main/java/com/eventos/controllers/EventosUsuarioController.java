@@ -2,12 +2,16 @@ package com.eventos.controllers;
 
 import com.eventos.models.Evento;
 import com.eventos.models.Usuario;
+import com.eventos.models.Compra;
+import com.eventos.models.Entrada;
+import com.eventos.models.EstadoCompra;
 import com.eventos.repositories.EventoRepository;
 import com.eventos.repositories.TipoEntradaRepository;
 import com.eventos.repositories.EntradaRepository;
 import com.eventos.repositories.CompraRepository;
 import com.eventos.services.AutenticacionService;
 import com.eventos.services.CompraService;
+import com.eventos.services.PagoService;
 import com.eventos.models.TipoEntrada;
 import com.eventos.utils.HotReloadManager;
 import javafx.fxml.FXML;
@@ -40,6 +44,7 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Locale;
+import java.math.BigDecimal;
 
 import java.io.IOException;
 import java.io.ByteArrayInputStream;
@@ -170,12 +175,12 @@ public class EventosUsuarioController {
                     netscape.javascript.JSObject window = (netscape.javascript.JSObject) webEngine.executeScript("window");
                     window.setMember("javaController", this);
                     
-                    // Dar tiempo a Leaflet para inicializar completamente
+                    // Forzar recarga inicial del mapa para asegurar que las teselas se carguen
                     javafx.application.Platform.runLater(() -> {
                         try {
-                            Thread.sleep(500); // Esperar 500ms
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            webEngine.executeScript("if (window.forzarRecargaInicial) window.forzarRecargaInicial();");
+                        } catch (Exception e) {
+                            System.err.println("Error al forzar recarga inicial: " + e.getMessage());
                         }
                         
                         if (eventosActuales != null && !eventosActuales.isEmpty()) {
@@ -367,62 +372,366 @@ public class EventosUsuarioController {
             mostrarError("Debes iniciar sesión para comprar");
             return;
         }
+        
+        // Verificar disponibilidad del evento
+        if (!evento.hayDisponibilidad()) {
+            mostrarError("Este evento no tiene entradas disponibles");
+            return;
+        }
 
         Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Comprar entradas");
-        dialog.setHeaderText(evento.getNombre());
+        dialog.setTitle("Comprar entradas - " + evento.getNombre());
+        dialog.setHeaderText("🎫 Información del Evento");
 
         ButtonType comprarBtn = new ButtonType("Comprar", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(comprarBtn, ButtonType.CANCEL);
 
+        // Componentes del formulario
         ChoiceBox<TipoEntrada> tipoChoice = new ChoiceBox<>();
         Spinner<Integer> cantidadSpinner = new Spinner<>(1, 10, 1);
-        Label totalLabel = new Label("Total: -");
-        Label precioUnitLabel = new Label();
+        cantidadSpinner.setEditable(true);
+        Label totalLabel = new Label("Total: $0.00");
+        totalLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #27ae60;");
+        Label precioUnitLabel = new Label("$0.00");
+        Label disponibilidadLabel = new Label();
+        Label descripcionTipoLabel = new Label();
+        descripcionTipoLabel.setWrapText(true);
+        descripcionTipoLabel.setMaxWidth(300);
+        descripcionTipoLabel.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 11px; -fx-font-style: italic;");
 
+        // Cargar tipos de entrada
         try {
-            List<TipoEntrada> tipos = tipoEntradaRepository.findAll();
-            tipoChoice.getItems().addAll(tipos);
-            if (!tipos.isEmpty()) {
-                tipoChoice.setValue(tipos.get(0));
+            List<TipoEntrada> tipos = tipoEntradaRepository.findAll().stream()
+                .filter(t -> t.getActivo() != null && t.getActivo())
+                .toList();
+            
+            if (tipos.isEmpty()) {
+                mostrarError("No hay tipos de entrada disponibles para este evento");
+                return;
             }
+            
+            tipoChoice.getItems().addAll(tipos);
+            tipoChoice.setValue(tipos.get(0));
         } catch (Exception e) {
-            mostrarError("No se pudieron cargar los tipos de entrada");
+            mostrarError("No se pudieron cargar los tipos de entrada: " + e.getMessage());
             return;
         }
 
-        tipoChoice.getSelectionModel().selectedItemProperty().addListener((obs, old, sel) -> actualizarTotales(sel, cantidadSpinner.getValue(), totalLabel, precioUnitLabel));
-        cantidadSpinner.valueProperty().addListener((obs, old, val) -> actualizarTotales(tipoChoice.getValue(), val, totalLabel, precioUnitLabel));
-        actualizarTotales(tipoChoice.getValue(), cantidadSpinner.getValue(), totalLabel, precioUnitLabel);
+        // Actualizar información del aforo disponible
+        int aforoDisponible = evento.getAforoMaximo() - evento.getAforoActual();
+        disponibilidadLabel.setText("Disponibles: " + aforoDisponible + " de " + evento.getAforoMaximo());
+        disponibilidadLabel.setStyle("-fx-text-fill: " + (aforoDisponible < 10 ? "#e74c3c" : "#3498db") + "; -fx-font-weight: bold;");
+        
+        // Actualizar límite del spinner según disponibilidad
+        cantidadSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, Math.min(10, aforoDisponible), 1));
 
+        // Listeners para actualizar totales
+        tipoChoice.getSelectionModel().selectedItemProperty().addListener((obs, old, sel) -> {
+            actualizarTotales(sel, cantidadSpinner.getValue(), totalLabel, precioUnitLabel);
+            if (sel != null && sel.getDescripcion() != null && !sel.getDescripcion().isEmpty()) {
+                descripcionTipoLabel.setText("ℹ️ " + sel.getDescripcion());
+                if (sel.getBeneficios() != null && !sel.getBeneficios().isEmpty()) {
+                    descripcionTipoLabel.setText(descripcionTipoLabel.getText() + "\n✨ " + sel.getBeneficios());
+                }
+            } else {
+                descripcionTipoLabel.setText("");
+            }
+        });
+        
+        cantidadSpinner.valueProperty().addListener((obs, old, val) -> {
+            actualizarTotales(tipoChoice.getValue(), val, totalLabel, precioUnitLabel);
+        });
+        
+        // Actualizar valores iniciales
+        actualizarTotales(tipoChoice.getValue(), cantidadSpinner.getValue(), totalLabel, precioUnitLabel);
+        TipoEntrada inicial = tipoChoice.getValue();
+        if (inicial != null && inicial.getDescripcion() != null && !inicial.getDescripcion().isEmpty()) {
+            descripcionTipoLabel.setText("ℹ️ " + inicial.getDescripcion());
+            if (inicial.getBeneficios() != null && !inicial.getBeneficios().isEmpty()) {
+                descripcionTipoLabel.setText(descripcionTipoLabel.getText() + "\n✨ " + inicial.getBeneficios());
+            }
+        }
+
+        // Crear grid con información
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
-        grid.add(new Label("Tipo de entrada:"), 0, 0);
-        grid.add(tipoChoice, 1, 0);
-        grid.add(new Label("Cantidad:"), 0, 1);
-        grid.add(cantidadSpinner, 1, 1);
-        grid.add(new Label("Precio unitario:"), 0, 2);
-        grid.add(precioUnitLabel, 1, 2);
-        grid.add(totalLabel, 1, 3);
+        grid.setStyle("-fx-padding: 20;");
+        
+        // Información del evento
+        Label eventoInfo = new Label("📅 " + evento.getFechaInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+        eventoInfo.setStyle("-fx-font-size: 13px; -fx-text-fill: #34495e;");
+        Label sedeInfo = new Label("📍 " + evento.getSede().getNombre() + " - " + evento.getSede().getCiudad());
+        sedeInfo.setStyle("-fx-font-size: 13px; -fx-text-fill: #34495e;");
+        
+        grid.add(eventoInfo, 0, 0, 2, 1);
+        grid.add(sedeInfo, 0, 1, 2, 1);
+        grid.add(disponibilidadLabel, 0, 2, 2, 1);
+        
+        Separator separator = new Separator();
+        grid.add(separator, 0, 3, 2, 1);
+        
+        grid.add(new Label("Tipo de entrada:"), 0, 4);
+        grid.add(tipoChoice, 1, 4);
+        grid.add(descripcionTipoLabel, 0, 5, 2, 1);
+        grid.add(new Label("Cantidad:"), 0, 6);
+        grid.add(cantidadSpinner, 1, 6);
+        grid.add(new Label("Precio unitario:"), 0, 7);
+        grid.add(precioUnitLabel, 1, 7);
+        
+        Separator separator2 = new Separator();
+        grid.add(separator2, 0, 8, 2, 1);
+        
+        grid.add(new Label("TOTAL:"), 0, 9);
+        grid.add(totalLabel, 1, 9);
+        
         dialog.getDialogPane().setContent(grid);
+        dialog.getDialogPane().setMinWidth(450);
 
         dialog.setResultConverter(dialogButton -> dialogButton == comprarBtn ? comprarBtn : null);
         dialog.showAndWait().ifPresent(result -> {
             TipoEntrada sel = tipoChoice.getValue();
             int cantidad = cantidadSpinner.getValue();
+            
             if (sel == null) {
                 mostrarError("Selecciona un tipo de entrada");
                 return;
             }
-            try {
-                compraService.procesarCompra(usuarioActual.getId(), evento.getId(), sel.getId(), cantidad, "Tarjeta");
-                mostrarInfo("Compra realizada. Código de confirmación generado.");
-                cargarEventos();
-            } catch (Exception e) {
-                mostrarError("No se pudo completar la compra: " + e.getMessage());
+            
+            if (cantidad > aforoDisponible) {
+                mostrarError("No hay suficientes entradas disponibles. Solo quedan " + aforoDisponible);
+                return;
+            }
+            
+            // Mostrar diálogo de pago
+            BigDecimal total = sel.getPrecio().multiply(BigDecimal.valueOf(cantidad));
+            mostrarDialogoPago(evento, sel, cantidad, total);
+        });
+    }
+
+    /**
+     * Muestra el diálogo de pago con validación de tarjeta.
+     */
+    private void mostrarDialogoPago(Evento evento, TipoEntrada tipoEntrada, int cantidad, BigDecimal total) {
+        Dialog<ButtonType> pagoDialog = new Dialog<>();
+        pagoDialog.setTitle("Procesamiento de Pago");
+        pagoDialog.setHeaderText("💳 Ingresa los datos de tu tarjeta");
+
+        ButtonType pagarBtn = new ButtonType("Pagar $" + total, ButtonBar.ButtonData.OK_DONE);
+        ButtonType testCardsBtn = new ButtonType("Ver tarjetas de prueba", ButtonBar.ButtonData.HELP);
+        pagoDialog.getDialogPane().getButtonTypes().addAll(pagarBtn, testCardsBtn, ButtonType.CANCEL);
+
+        // Campos del formulario
+        TextField numeroTarjetaField = new TextField();
+        numeroTarjetaField.setPromptText("1234 5678 9012 3456");
+        Label tipoTarjetaLabel = new Label("");
+        tipoTarjetaLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #27ae60; -fx-font-weight: bold;");
+        
+        TextField expiracionField = new TextField();
+        expiracionField.setPromptText("MM/YY");
+        expiracionField.setMaxWidth(100);
+        
+        TextField cvvField = new TextField();
+        cvvField.setPromptText("123");
+        cvvField.setMaxWidth(80);
+        
+        TextField nombreField = new TextField();
+        nombreField.setPromptText("Nombre como aparece en la tarjeta");
+
+        // Validación en tiempo real del número de tarjeta
+        numeroTarjetaField.textProperty().addListener((obs, old, nuevo) -> {
+            if (nuevo != null && !nuevo.isEmpty()) {
+                String tipoTarjeta = PagoService.detectarTipoTarjeta(nuevo);
+                if (!tipoTarjeta.equals("Desconocido")) {
+                    tipoTarjetaLabel.setText("🔹 " + tipoTarjeta);
+                } else {
+                    tipoTarjetaLabel.setText("");
+                }
+            } else {
+                tipoTarjetaLabel.setText("");
             }
         });
+
+        // Grid del formulario
+        GridPane pagoGrid = new GridPane();
+        pagoGrid.setHgap(10);
+        pagoGrid.setVgap(12);
+        pagoGrid.setStyle("-fx-padding: 20;");
+
+        Label totalInfoLabel = new Label("Total a pagar: $" + total);
+        totalInfoLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        
+        Label detalleLabel = new Label(cantidad + " entrada(s) - " + tipoEntrada.getNombre());
+        detalleLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #7f8c8d;");
+
+        pagoGrid.add(totalInfoLabel, 0, 0, 2, 1);
+        pagoGrid.add(detalleLabel, 0, 1, 2, 1);
+        
+        Separator sep1 = new Separator();
+        pagoGrid.add(sep1, 0, 2, 2, 1);
+
+        pagoGrid.add(new Label("Número de tarjeta:"), 0, 3);
+        pagoGrid.add(numeroTarjetaField, 1, 3);
+        pagoGrid.add(tipoTarjetaLabel, 1, 4);
+
+        HBox expirationCvvBox = new HBox(10);
+        VBox expBox = new VBox(5);
+        expBox.getChildren().addAll(new Label("Expiración:"), expiracionField);
+        VBox cvvBox = new VBox(5);
+        Label cvvLabelWithHelp = new Label("CVV:");
+        cvvLabelWithHelp.setTooltip(new javafx.scene.control.Tooltip("Los 3 dígitos en el reverso de tu tarjeta\n(4 dígitos para American Express)"));
+        cvvBox.getChildren().addAll(cvvLabelWithHelp, cvvField);
+        expirationCvvBox.getChildren().addAll(expBox, cvvBox);
+        
+        pagoGrid.add(expirationCvvBox, 0, 5, 2, 1);
+
+        pagoGrid.add(new Label("Nombre del titular:"), 0, 6);
+        pagoGrid.add(nombreField, 1, 6);
+
+        pagoDialog.getDialogPane().setContent(pagoGrid);
+        pagoDialog.getDialogPane().setMinWidth(500);
+
+        // Manejar botón de tarjetas de prueba
+        Button testCardsButton = (Button) pagoDialog.getDialogPane().lookupButton(testCardsBtn);
+        testCardsButton.addEventFilter(javafx.event.ActionEvent.ACTION, event -> {
+            event.consume();
+            mostrarTarjetasPrueba();
+        });
+
+        // Procesar resultado
+        pagoDialog.setResultConverter(dialogButton -> {
+            if (dialogButton == pagarBtn) {
+                return pagarBtn;
+            }
+            return null;
+        });
+
+        pagoDialog.showAndWait().ifPresent(result -> {
+            String numeroTarjeta = numeroTarjetaField.getText().trim();
+            String expiracion = expiracionField.getText().trim();
+            String cvv = cvvField.getText().trim();
+            String nombre = nombreField.getText().trim();
+
+            // Validar campos vacíos
+            if (numeroTarjeta.isEmpty() || expiracion.isEmpty() || cvv.isEmpty() || nombre.isEmpty()) {
+                mostrarError("❌ Todos los campos son obligatorios");
+                return;
+            }
+
+            // Procesar pago con animación
+            procesarPagoConAnimacion(numeroTarjeta, expiracion, cvv, nombre, total, evento, tipoEntrada, cantidad);
+        });
+    }
+
+    /**
+     * Procesa el pago mostrando una animación de carga.
+     */
+    private void procesarPagoConAnimacion(String numeroTarjeta, String expiracion, String cvv, 
+                                          String nombre, BigDecimal monto, Evento evento, 
+                                          TipoEntrada tipoEntrada, int cantidad) {
+        // Crear ventana de procesamiento
+        Dialog<Void> processingDialog = new Dialog<>();
+        processingDialog.setTitle("Procesando Pago");
+        processingDialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        Button closeButton = (Button) processingDialog.getDialogPane().lookupButton(ButtonType.CLOSE);
+        closeButton.setVisible(false);
+
+        VBox content = new VBox(15);
+        content.setStyle("-fx-padding: 30; -fx-alignment: center;");
+        
+        ProgressIndicator progress = new ProgressIndicator();
+        progress.setPrefSize(60, 60);
+        
+        Label messageLabel = new Label("Validando información de pago...");
+        messageLabel.setStyle("-fx-font-size: 14px;");
+        
+        content.getChildren().addAll(progress, messageLabel);
+        processingDialog.getDialogPane().setContent(content);
+        processingDialog.getDialogPane().setMinWidth(400);
+        processingDialog.getDialogPane().setMinHeight(200);
+
+        processingDialog.show();
+
+        // Procesar en thread separado
+        new Thread(() -> {
+            try {
+                PagoService.ResultadoPago resultado = PagoService.procesarPago(
+                    numeroTarjeta, expiracion, cvv, nombre, monto.doubleValue()
+                );
+
+                javafx.application.Platform.runLater(() -> {
+                    processingDialog.close();
+                    
+                    if (resultado.isExitoso()) {
+                        // Pago exitoso - procesar compra
+                        try {
+                            String tipoTarjeta = PagoService.detectarTipoTarjeta(numeroTarjeta);
+                            compraService.procesarCompra(
+                                usuarioActual.getId(), 
+                                evento.getId(), 
+                                tipoEntrada.getId(), 
+                                cantidad, 
+                                tipoTarjeta
+                            );
+                            
+                            mostrarInfo("✅ PAGO APROBADO\n\n" +
+                                       "Número de autorización: " + resultado.getNumeroAutorizacion() + "\n" +
+                                       "Número de transacción: " + resultado.getNumeroTransaccion() + "\n\n" +
+                                       "Se han generado " + cantidad + " entrada(s) con código QR.\n" +
+                                       "Puedes ver tus entradas en 'Historial de Compras'.");
+                            cargarEventos(); // Recargar para actualizar aforo
+                        } catch (Exception e) {
+                            mostrarError("❌ El pago fue aprobado pero hubo un error al generar las entradas:\n" + e.getMessage());
+                        }
+                    } else {
+                        // Pago rechazado
+                        mostrarError("❌ PAGO RECHAZADO\n\n" + resultado.getMensaje());
+                    }
+                });
+            } catch (Exception e) {
+                javafx.application.Platform.runLater(() -> {
+                    processingDialog.close();
+                    mostrarError("❌ Error en el procesamiento: " + e.getMessage());
+                });
+            }
+        }).start();
+    }
+
+    /**
+     * Muestra las tarjetas de prueba disponibles.
+     */
+    private void mostrarTarjetasPrueba() {
+        String[] tarjetas = PagoService.obtenerTarjetasPrueba();
+        
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Tarjetas de Prueba");
+        alert.setHeaderText("🎯 Usa estas tarjetas para probar el sistema");
+        
+        StringBuilder content = new StringBuilder();
+        content.append("Todas las tarjetas tienen:\n");
+        content.append("• CVV: 123 (456 para Amex)\n");
+        content.append("• Fecha: 12/25 o posterior\n");
+        content.append("• Nombre: Cualquier nombre\n\n");
+        content.append("═══════════════════════════\n\n");
+        
+        for (String tarjeta : tarjetas) {
+            String tipo = PagoService.detectarTipoTarjeta(tarjeta);
+            content.append("🔹 ").append(tipo).append("\n");
+            content.append("   ").append(tarjeta).append("\n\n");
+        }
+        
+        content.append("═══════════════════════════\n");
+        content.append("Tasa de éxito: 95%");
+        
+        TextArea textArea = new TextArea(content.toString());
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+        textArea.setPrefRowCount(15);
+        textArea.setStyle("-fx-font-family: 'Courier New'; -fx-font-size: 11px;");
+        
+        alert.getDialogPane().setContent(textArea);
+        alert.getDialogPane().setMinWidth(450);
+        alert.showAndWait();
     }
 
     private void actualizarTotales(TipoEntrada tipo, int cantidad, Label totalLabel, Label precioUnitLabel) {
@@ -436,7 +745,7 @@ public class EventosUsuarioController {
     }
 
     /**
-     * Busca eventos por texto.
+     * Busca eventos por nombre del evento únicamente.
      */
     private void buscarEventos(String textoBusqueda) {
         if (textoBusqueda == null || textoBusqueda.trim().isEmpty()) {
@@ -444,12 +753,16 @@ public class EventosUsuarioController {
             return;
         }
 
+        String busqueda = textoBusqueda.toLowerCase().trim();
         List<Evento> eventosFiltrados = eventosActuales.stream()
-            .filter(e -> e.getNombre().toLowerCase().contains(textoBusqueda.toLowerCase()) ||
-                        e.getDescripcion().toLowerCase().contains(textoBusqueda.toLowerCase()))
+            .filter(e -> e.getNombre().toLowerCase().contains(busqueda))
             .toList();
 
         mostrarEventos(eventosFiltrados);
+        
+        if (eventosFiltrados.isEmpty()) {
+            mostrarInfo("No se encontraron eventos con el nombre: \"" + textoBusqueda + "\"");
+        }
     }
 
     // ========== MÉTODOS DE ACCIONES FXML ==========
@@ -468,26 +781,169 @@ public class EventosUsuarioController {
 
     @FXML
     private void handleFiltrarEventos() {
-        // TODO: Implementar filtro por tipo de evento
-        mostrarInfo("Filtro por tipo de evento en desarrollo");
+        // Obtener tipos de eventos únicos
+        List<String> tiposUnicos = eventosActuales.stream()
+            .filter(e -> e.getTipoEvento() != null)
+            .map(e -> e.getTipoEvento().getNombre())
+            .distinct()
+            .sorted()
+            .toList();
+        
+        if (tiposUnicos.isEmpty()) {
+            mostrarInfo("No hay tipos de eventos disponibles");
+            return;
+        }
+        
+        // Crear diálogo de selección
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("Todos", tiposUnicos);
+        dialog.setTitle("Filtrar por Tipo de Evento");
+        dialog.setHeaderText("Selecciona un tipo de evento");
+        dialog.setContentText("Tipo:");
+        
+        dialog.showAndWait().ifPresent(tipoSeleccionado -> {
+            if ("Todos".equals(tipoSeleccionado)) {
+                mostrarEventos(eventosActuales);
+            } else {
+                List<Evento> eventosFiltrados = eventosActuales.stream()
+                    .filter(e -> e.getTipoEvento() != null && 
+                                e.getTipoEvento().getNombre().equals(tipoSeleccionado))
+                    .toList();
+                mostrarEventos(eventosFiltrados);
+                mostrarInfo("Mostrando " + eventosFiltrados.size() + " evento(s) de tipo: " + tipoSeleccionado);
+            }
+        });
     }
 
     @FXML
     private void handleFiltrarFechas() {
-        // TODO: Implementar filtro por fechas
-        mostrarInfo("Filtro por fechas en desarrollo");
+        // Crear diálogo con DatePicker
+        Dialog<java.time.LocalDate> dialog = new Dialog<>();
+        dialog.setTitle("Filtrar por Fecha");
+        dialog.setHeaderText("Selecciona la fecha máxima para los eventos");
+        
+        // Configurar botones
+        ButtonType filtrarButtonType = new ButtonType("Filtrar", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(filtrarButtonType, ButtonType.CANCEL);
+        
+        // Crear DatePicker
+        DatePicker datePicker = new DatePicker();
+        datePicker.setValue(java.time.LocalDate.now().plusDays(30)); // Por defecto 30 días
+        datePicker.setPromptText("dd/MM/yyyy");
+        
+        // Layout
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new javafx.geometry.Insets(20, 150, 10, 10));
+        
+        Label instruccion = new Label("Los eventos se mostrarán desde hoy hasta la fecha seleccionada:");
+        instruccion.setWrapText(true);
+        
+        grid.add(instruccion, 0, 0);
+        grid.add(new Label("Fecha máxima:"), 0, 1);
+        grid.add(datePicker, 1, 1);
+        
+        dialog.getDialogPane().setContent(grid);
+        
+        // Convertir resultado
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == filtrarButtonType) {
+                return datePicker.getValue();
+            }
+            return null;
+        });
+        
+        // Procesar resultado
+        dialog.showAndWait().ifPresent(fechaMaxima -> {
+            java.time.LocalDateTime ahora = java.time.LocalDateTime.now();
+            java.time.LocalDateTime fechaLimite = fechaMaxima.atTime(23, 59, 59);
+            
+            if (fechaLimite.isBefore(ahora)) {
+                mostrarError("La fecha seleccionada debe ser igual o posterior a hoy");
+                return;
+            }
+            
+            List<Evento> eventosFiltrados = eventosActuales.stream()
+                .filter(e -> e.getFechaInicio() != null && 
+                            !e.getFechaInicio().isBefore(ahora) &&
+                            !e.getFechaInicio().isAfter(fechaLimite))
+                .toList();
+            
+            mostrarEventos(eventosFiltrados);
+            
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            mostrarInfo("Mostrando " + eventosFiltrados.size() + 
+                       " evento(s) hasta el " + fechaMaxima.format(formatter));
+        });
     }
 
     @FXML
     private void handleFiltrarPrecio() {
-        // TODO: Implementar filtro por precio
-        mostrarInfo("Filtro por precio en desarrollo");
+        TextInputDialog dialog = new TextInputDialog("1000");
+        dialog.setTitle("Filtrar por Precio");
+        dialog.setHeaderText("Precio máximo");
+        dialog.setContentText("Ingrese el precio máximo que desea pagar:");
+        
+        dialog.showAndWait().ifPresent(precioTexto -> {
+            try {
+                // Validar que sea un número válido
+                java.math.BigDecimal precioMaximo = new java.math.BigDecimal(precioTexto.trim());
+                
+                if (precioMaximo.compareTo(java.math.BigDecimal.ZERO) < 0) {
+                    mostrarError("El precio debe ser mayor o igual a 0");
+                    return;
+                }
+                
+                // Filtrar eventos por precio
+                List<Evento> eventosFiltrados = eventosActuales.stream()
+                    .filter(e -> e.getPrecioBase() != null && 
+                                e.getPrecioBase().compareTo(precioMaximo) <= 0)
+                    .toList();
+                
+                mostrarEventos(eventosFiltrados);
+                mostrarInfo("Mostrando " + eventosFiltrados.size() + 
+                           " evento(s) con precio hasta $" + precioMaximo);
+                           
+            } catch (NumberFormatException e) {
+                mostrarError("Por favor, ingrese un número válido");
+            }
+        });
     }
 
     @FXML
     private void handleLocalizacion() {
-        // TODO: Implementar filtro por localización
-        mostrarInfo("Filtro por localización en desarrollo");
+        // Obtener ciudades únicas
+        List<String> ciudadesUnicas = eventosActuales.stream()
+            .filter(e -> e.getSede() != null && e.getSede().getCiudad() != null)
+            .map(e -> e.getSede().getCiudad())
+            .distinct()
+            .sorted()
+            .toList();
+        
+        if (ciudadesUnicas.isEmpty()) {
+            mostrarInfo("No hay ciudades disponibles");
+            return;
+        }
+        
+        // Crear diálogo de selección
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("Todas", ciudadesUnicas);
+        dialog.setTitle("Filtrar por Localización");
+        dialog.setHeaderText("Selecciona una ciudad");
+        dialog.setContentText("Ciudad:");
+        
+        dialog.showAndWait().ifPresent(ciudadSeleccionada -> {
+            if ("Todas".equals(ciudadSeleccionada)) {
+                mostrarEventos(eventosActuales);
+            } else {
+                List<Evento> eventosFiltrados = eventosActuales.stream()
+                    .filter(e -> e.getSede() != null && 
+                                e.getSede().getCiudad() != null &&
+                                e.getSede().getCiudad().equals(ciudadSeleccionada))
+                    .toList();
+                mostrarEventos(eventosFiltrados);
+                mostrarInfo("Mostrando " + eventosFiltrados.size() + " evento(s) en: " + ciudadSeleccionada);
+            }
+        });
     }
 
     @FXML
@@ -535,9 +991,154 @@ public class EventosUsuarioController {
 
     @FXML
     private void handleHistorial() {
-        // TODO: Implementar historial de compras
-        mostrarInfo("Historial de compras en desarrollo");
         toggleMenu();
+        
+        if (usuarioActual == null) {
+            mostrarError("Debes iniciar sesión");
+            return;
+        }
+        
+        try {
+            List<Compra> compras = compraRepository.findAll().stream()
+                .filter(c -> c.getUsuario().getId().equals(usuarioActual.getId()))
+                .sorted((c1, c2) -> c2.getFechaCompra().compareTo(c1.getFechaCompra()))
+                .toList();
+            
+            if (compras.isEmpty()) {
+                mostrarInfo("No tienes compras registradas");
+                return;
+            }
+            
+            Dialog<Void> dialog = new Dialog<>();
+            dialog.setTitle("Historial de Compras");
+            dialog.setHeaderText("🎫 Mis Compras (" + compras.size() + ")");
+            
+            VBox content = new VBox(12);
+            content.setStyle("-fx-padding: 20;");
+            
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+            
+            for (Compra compra : compras) {
+                VBox compraCard = new VBox(8);
+                compraCard.setStyle("-fx-border-color: #3498db; -fx-border-width: 2; -fx-border-radius: 8; " +
+                                   "-fx-background-color: #ecf0f1; -fx-background-radius: 8; -fx-padding: 15;");
+                
+                // Encabezado de la compra
+                HBox header = new HBox(10);
+                header.setStyle("-fx-alignment: center-left;");
+                
+                Label codigoLabel = new Label("📋 Compra: " + compra.getCodigoConfirmacion());
+                codigoLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 13px;");
+                
+                Label fechaLabel = new Label("📅 " + compra.getFechaCompra().format(formatter));
+                fechaLabel.setStyle("-fx-text-fill: #7f8c8d;");
+                
+                Label estadoLabel = new Label(compra.getEstado().name());
+                estadoLabel.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; " +
+                                    "-fx-padding: 3 8; -fx-border-radius: 10; -fx-background-radius: 10;");
+                
+                header.getChildren().addAll(codigoLabel, fechaLabel, estadoLabel);
+                
+                // Detalles de entradas
+                VBox entradasBox = new VBox(5);
+                List<Entrada> entradas = entradaRepository.findAll().stream()
+                    .filter(e -> e.getCompra().getId().equals(compra.getId()))
+                    .toList();
+                
+                for (Entrada entrada : entradas) {
+                    HBox entradaRow = new HBox(10);
+                    entradaRow.setStyle("-fx-alignment: center-left; -fx-padding: 5; -fx-background-color: white; " +
+                                       "-fx-border-radius: 5; -fx-background-radius: 5;");
+                    
+                    Label numLabel = new Label("🎫 " + entrada.getNumeroEntrada());
+                    numLabel.setStyle("-fx-font-size: 11px; -fx-font-family: monospace;");
+                    
+                    Label eventoLabel = new Label(entrada.getEvento().getNombre());
+                    eventoLabel.setStyle("-fx-font-weight: bold;");
+                    
+                    Label tipoLabel = new Label(entrada.getTipoEntrada().getNombre() + " - $" + entrada.getTipoEntrada().getPrecio());
+                    tipoLabel.setStyle("-fx-text-fill: #3498db;");
+                    
+                    Label validadaLabel = new Label(entrada.getValidada() ? "✅ Validada" : "⏳ Pendiente");
+                    validadaLabel.setStyle(entrada.getValidada() ? "-fx-text-fill: #27ae60;" : "-fx-text-fill: #e67e22;");
+                    
+                    Button btnQR = new Button("Ver QR");
+                    btnQR.setStyle("-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-cursor: hand; -fx-font-size: 10px;");
+                    btnQR.setOnAction(e -> mostrarQR(entrada));
+                    
+                    entradaRow.getChildren().addAll(numLabel, eventoLabel, tipoLabel, validadaLabel, btnQR);
+                    entradasBox.getChildren().add(entradaRow);
+                }
+                
+                Separator sep = new Separator();
+                
+                // Total
+                Label totalLabel = new Label("💰 Total: $" + compra.getTotal());
+                totalLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #27ae60;");
+                
+                compraCard.getChildren().addAll(header, sep, entradasBox, totalLabel);
+                content.getChildren().add(compraCard);
+            }
+            
+            ScrollPane scrollPane = new ScrollPane(content);
+            scrollPane.setFitToWidth(true);
+            scrollPane.setPrefHeight(500);
+            scrollPane.setPrefWidth(700);
+            
+            dialog.getDialogPane().setContent(scrollPane);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+            dialog.showAndWait();
+            
+        } catch (Exception e) {
+            mostrarError("Error al cargar historial: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private void mostrarQR(Entrada entrada) {
+        if (entrada.getCodigoQR() == null || entrada.getCodigoQR().isEmpty()) {
+            mostrarError("Esta entrada no tiene código QR");
+            return;
+        }
+        
+        try {
+            Dialog<Void> qrDialog = new Dialog<>();
+            qrDialog.setTitle("Código QR");
+            qrDialog.setHeaderText("🎫 " + entrada.getEvento().getNombre());
+            
+            VBox content = new VBox(10);
+            content.setStyle("-fx-alignment: center; -fx-padding: 20;");
+            
+            // Decodificar base64 y mostrar imagen
+            String base64Data = entrada.getCodigoQR();
+            if (base64Data.contains(",")) {
+                base64Data = base64Data.split(",")[1];
+            }
+            
+            byte[] imageBytes = java.util.Base64.getDecoder().decode(base64Data);
+            java.io.ByteArrayInputStream bis = new java.io.ByteArrayInputStream(imageBytes);
+            javafx.scene.image.Image qrImage = new javafx.scene.image.Image(bis);
+            
+            javafx.scene.image.ImageView imageView = new javafx.scene.image.ImageView(qrImage);
+            imageView.setFitWidth(300);
+            imageView.setFitHeight(300);
+            imageView.setPreserveRatio(true);
+            
+            Label infoLabel = new Label("Número: " + entrada.getNumeroEntrada());
+            infoLabel.setStyle("-fx-font-size: 12px; -fx-font-family: monospace;");
+            
+            Label tipoLabel = new Label(entrada.getTipoEntrada().getNombre());
+            tipoLabel.setStyle("-fx-font-weight: bold;");
+            
+            content.getChildren().addAll(imageView, infoLabel, tipoLabel);
+            
+            qrDialog.getDialogPane().setContent(content);
+            qrDialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+            qrDialog.showAndWait();
+            
+        } catch (Exception e) {
+            mostrarError("Error al mostrar QR: " + e.getMessage());
+        }
     }
 
     private HBox crearTarjetaEntrada(com.eventos.models.Entrada entrada) {
@@ -641,9 +1242,11 @@ public class EventosUsuarioController {
             Parent loginRoot = loader.load();
 
             Stage stage = (Stage) menuButton.getScene().getWindow();
-            Scene scene = new Scene(loginRoot);
+            Scene scene = new Scene(loginRoot, 600, 500);
             stage.setScene(scene);
-            stage.setTitle("Sistema de Gestión de Eventos - Login");
+            stage.setTitle("Sistema de Gesti\u00f3n de Eventos - Login");
+            stage.setResizable(true);
+            stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {
             mostrarError("Error al cargar el login: " + e.getMessage());

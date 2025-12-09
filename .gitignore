@@ -64,7 +64,6 @@ credentials.txt
 # ARCHIVOS GENERADOS
 # ========================================
 logs/
-!logs/.gitkeep
 *.class
 *.jar
 *.war
