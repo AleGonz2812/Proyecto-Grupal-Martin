@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.eventos.controllers.EventosUsuarioController"
+           stylesheets="@../css/styles.css">
+
+<BorderPane styleClass="root">
+
+    <!-- BARRA SUPERIOR -->
+    <top>
+        <VBox styleClass="top-bar">
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <padding>
+                    <Insets top="15" right="20" bottom="15" left="20"/>
+                </padding>
+
+                <!-- Menú Hamburguesa -->
+                <Button fx:id="menuButton"
+                       text="☰"
+                       onAction="#toggleMenu"
+                       styleClass="menu-button"
+                       prefWidth="50"
+                       prefHeight="50">
+                    <font>
+                        <Font size="24"/>
+                    </font>
+                </Button>
+
+                <!-- Barra de Búsqueda -->
+                <TextField fx:id="busquedaField"
+                          promptText="BARRA DE BÚSQUEDA"
+                          HBox.hgrow="ALWAYS"
+                          styleClass="search-field"
+                          prefHeight="45">
+                    <font>
+                        <Font size="14"/>
+                    </font>
+                </TextField>
+
+                <!-- Botón de Búsqueda -->
+                <Button fx:id="buscarButton"
+                       text="🔍"
+                       onAction="#handleBuscar"
+                       styleClass="search-button"
+                       prefWidth="50"
+                       prefHeight="45">
+                    <font>
+                        <Font size="20"/>
+                    </font>
+                </Button>
+
+                <!-- Avatar Usuario -->
+                <Button fx:id="avatarButton"
+                       onAction="#togglePerfilMenu"
+                       styleClass="avatar-button"
+                       prefWidth="50"
+                       prefHeight="50">
+                    <graphic>
+                        <Label text="👤" styleClass="avatar-icon">
+                            <font>
+                                <Font size="24"/>
+                            </font>
+                        </Label>
+                    </graphic>
+                </Button>
+            </HBox>
+
+            <!-- Barra de Filtros -->
+            <HBox alignment="CENTER" spacing="10" styleClass="filter-bar">
+                <padding>
+                    <Insets top="10" right="20" bottom="10" left="20"/>
+                </padding>
+
+                <Button text="FILTRAR EVENTOS"
+                       onAction="#handleFiltrarEventos"
+                       styleClass="filter-button"
+                       prefHeight="35"/>
+
+                <Button text="FILTRAR FECHAS"
+                       onAction="#handleFiltrarFechas"
+                       styleClass="filter-button"
+                       prefHeight="35"/>
+
+                <Button text="FILTRAR PRECIO"
+                       onAction="#handleFiltrarPrecio"
+                       styleClass="filter-button"
+                       prefHeight="35"/>
+
+                <Button text="LOCALIZACIÓN"
+                       onAction="#handleLocalizacion"
+                       styleClass="filter-button"
+                       prefHeight="35"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- CONTENIDO CENTRAL - MAPA Y LISTADO -->
+    <center>
+        <SplitPane dividerPositions="0.6" styleClass="content-pane">
+            <!-- Panel Izquierdo - Mapa -->
+            <AnchorPane styleClass="map-container">
+                <StackPane fx:id="mapaContainer"
+                        AnchorPane.topAnchor="0"
+                        AnchorPane.bottomAnchor="0"
+                        AnchorPane.leftAnchor="0"
+                        AnchorPane.rightAnchor="0"/>
+            </AnchorPane>
+
+            <!-- Panel Derecho - Lista de Eventos -->
+            <VBox spacing="10" styleClass="events-list-container">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+
+                <Label text="Eventos Disponibles" styleClass="section-title">
+                    <font>
+                        <Font size="18" name="System Bold"/>
+                    </font>
+                </Label>
+
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+                    <VBox fx:id="eventosListContainer" spacing="10">
+                        <!-- Los eventos se cargarán dinámicamente aquí -->
+                    </VBox>
+                </ScrollPane>
+            </VBox>
+        </SplitPane>
+    </center>
+
+    <!-- MENÚ LATERAL (OCULTO POR DEFECTO) -->
+    <left>
+        <VBox fx:id="sideMenu"
+              styleClass="sidebar"
+              visible="false"
+              managed="false"
+              prefWidth="250">
+            <padding>
+                <Insets top="20" right="15" bottom="20" left="15"/>
+            </padding>
+
+            <Label text="MENÚ" styleClass="sidebar-title">
+                <font>
+                    <Font size="20" name="System Bold"/>
+                </font>
+            </Label>
+
+            <Separator/>
+
+            <VBox spacing="5" VBox.vgrow="ALWAYS">
+                <padding>
+                    <Insets top="15"/>
+                </padding>
+
+                <Button text="🏠 Inicio"
+                       onAction="#handleInicio"
+                       styleClass="menu-item-button"
+                       maxWidth="Infinity"/>
+
+                <Button text="🎟️ Mis Entradas"
+                       onAction="#handleMisEntradas"
+                       styleClass="menu-item-button"
+                       maxWidth="Infinity"/>
+
+                <Button text="🛒 Historial de Compras"
+                       onAction="#handleHistorial"
+                       styleClass="menu-item-button"
+                       maxWidth="Infinity"/>
+
+                <Button text="👤 Mi Perfil"
+                       onAction="#handleMiPerfil"
+                       styleClass="menu-item-button"
+                       maxWidth="Infinity"/>
+
+                <Separator/>
+                
+                <Button text="🔄 Recargar Vista"
+                       onAction="#handleRecargarVista"
+                       styleClass="menu-item-button"
+                       maxWidth="Infinity">
+                    <tooltip>
+                        <Tooltip text="F5: Recargar todo | F6: Solo CSS"/>
+                    </tooltip>
+                </Button>
+
+                <Separator/>
+
+                <Button text="🚪 Cerrar Sesión"
+                       onAction="#handleCerrarSesion"
+                       styleClass="danger-button"
+                       maxWidth="Infinity"/>
+            </VBox>
+        </VBox>
+    </left>
+
+</BorderPane>
+
+<!-- Menú dropdown del perfil (overlay flotante) -->
+<VBox fx:id="perfilMenu"
+      visible="false"
+      managed="false"
+      styleClass="perfil-dropdown"
+      maxWidth="180"
+      maxHeight="200"
+      StackPane.alignment="TOP_RIGHT">
+    <StackPane.margin>
+        <Insets top="65" right="20"/>
+    </StackPane.margin>
+    
+    <Button text="👤 Mi Perfil"
+           onAction="#handleMiPerfil"
+           styleClass="dropdown-item"
+           maxWidth="Infinity"/>
+    
+    <Button text="🎫 Mis Entradas"
+           onAction="#handleMisEntradas"
+           styleClass="dropdown-item"
+           maxWidth="Infinity"/>
+    
+    <Button text="⚙️ Configuración"
+           onAction="#handleConfiguracion"
+           styleClass="dropdown-item"
+           maxWidth="Infinity"/>
+    
+    <Separator/>
+    
+    <Button text="🚪 Cerrar Sesión"
+           onAction="#handleCerrarSesionDropdown"
+           styleClass="dropdown-item dropdown-item-danger"
+           maxWidth="Infinity"/>
+</VBox>
+
+</StackPane>

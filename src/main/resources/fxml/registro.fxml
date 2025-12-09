@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.eventos.controllers.RegistroController"
+      alignment="CENTER"
+      spacing="20"
+      styleClass="root"
+      stylesheets="@../css/styles.css">
+
+    <padding>
+        <Insets top="40" right="40" bottom="40" left="40"/>
+    </padding>
+
+    <!-- Título -->
+    <VBox alignment="CENTER" spacing="10">
+        <Label text="Crear Cuenta Nueva" styleClass="title">
+            <font>
+                <Font name="System Bold" size="28"/>
+            </font>
+        </Label>
+        <Label text="Completa el formulario para registrarte" styleClass="subtitle">
+            <font>
+                <Font size="14"/>
+            </font>
+        </Label>
+    </VBox>
+
+    <!-- Formulario de Registro -->
+    <VBox spacing="15" alignment="CENTER" styleClass="form-container">
+        <padding>
+            <Insets top="30" right="40" bottom="30" left="40"/>
+        </padding>
+
+        <!-- Nombre -->
+        <VBox spacing="5">
+            <Label text="Nombre Completo:" styleClass="form-label">
+                <font>
+                    <Font name="System Bold" size="12"/>
+                </font>
+            </Label>
+            <TextField fx:id="nombreField"
+                      promptText="Ej: Juan Pérez"
+                      prefWidth="300"
+                      styleClass="form-field"/>
+        </VBox>
+
+        <!-- Email -->
+        <VBox spacing="5">
+            <Label text="Correo Electrónico:" styleClass="form-label">
+                <font>
+                    <Font name="System Bold" size="12"/>
+                </font>
+            </Label>
+            <TextField fx:id="emailField"
+                      promptText="ejemplo@correo.com"
+                      prefWidth="300"
+                      styleClass="form-field"/>
+        </VBox>
+
+        <!-- Teléfono -->
+        <VBox spacing="5">
+            <Label text="Teléfono:" styleClass="form-label">
+                <font>
+                    <Font name="System Bold" size="12"/>
+                </font>
+            </Label>
+            <TextField fx:id="telefonoField"
+                      promptText="Ej: +34 600 123 456"
+                      prefWidth="300"
+                      styleClass="form-field"/>
+        </VBox>
+
+        <!-- DNI -->
+        <VBox spacing="5">
+            <Label text="DNI/NIE:" styleClass="form-label">
+                <font>
+                    <Font name="System Bold" size="12"/>
+                </font>
+            </Label>
+            <TextField fx:id="dniField"
+                      promptText="Ej: 12345678A"
+                      prefWidth="300"
+                      styleClass="form-field"/>
+        </VBox>
+
+        <!-- Contraseña con botón ver/ocultar -->
+        <VBox spacing="5">
+            <Label text="Contraseña:" styleClass="form-label">
+                <font>
+                    <Font name="System Bold" size="12"/>
+                </font>
+            </Label>
+            <StackPane>
+                <PasswordField fx:id="passwordField"
+                              promptText="Mínimo 6 caracteres"
+                              prefWidth="300"
+                              styleClass="form-field"/>
+                
+                <TextField fx:id="passwordVisibleField"
+                          promptText="Mínimo 6 caracteres"
+                          prefWidth="300"
+                          styleClass="form-field"
+                          visible="false"
+                          managed="false"/>
+                
+                <Button fx:id="togglePasswordButton"
+                       text="👁"
+                       onAction="#togglePasswordVisibility"
+                       prefWidth="40"
+                       prefHeight="30"
+                       StackPane.alignment="CENTER_RIGHT"
+                       style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 16;">
+                    <StackPane.margin>
+                        <Insets right="5"/>
+                    </StackPane.margin>
+                </Button>
+            </StackPane>
+        </VBox>
+
+        <!-- Confirmar Contraseña con botón ver/ocultar -->
+        <VBox spacing="5">
+            <Label text="Confirmar Contraseña:" styleClass="form-label">
+                <font>
+                    <Font name="System Bold" size="12"/>
+                </font>
+            </Label>
+            <StackPane>
+                <PasswordField fx:id="confirmarPasswordField"
+                              promptText="Repite tu contraseña"
+                              prefWidth="300"
+                              styleClass="form-field"/>
+                
+                <TextField fx:id="confirmarPasswordVisibleField"
+                          promptText="Repite tu contraseña"
+                          prefWidth="300"
+                          styleClass="form-field"
+                          visible="false"
+                          managed="false"/>
+                
+                <Button fx:id="toggleConfirmarPasswordButton"
+                       text="👁"
+                       onAction="#toggleConfirmarPasswordVisibility"
+                       prefWidth="40"
+                       prefHeight="30"
+                       StackPane.alignment="CENTER_RIGHT"
+                       style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 16;">
+                    <StackPane.margin>
+                        <Insets right="5"/>
+                    </StackPane.margin>
+                </Button>
+            </StackPane>
+        </VBox>
+
+        <!-- Checkbox Registrar como Administrador -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <CheckBox fx:id="esAdminCheckBox" styleClass="form-checkbox"/>
+            <Label text="Registrar como Administrador" styleClass="form-label">
+                <font>
+                    <Font size="12"/>
+                </font>
+            </Label>
+        </HBox>
+
+        <!-- Mensaje de Error -->
+        <Label fx:id="errorLabel" styleClass="error-label" wrapText="true" maxWidth="300"/>
+
+        <!-- Botones -->
+        <HBox spacing="15" alignment="CENTER">
+            <padding>
+                <Insets top="10"/>
+            </padding>
+            
+            <Button fx:id="registrarButton"
+                   text="Crear Cuenta"
+                   onAction="#handleRegistro"
+                   styleClass="primary-button"
+                   prefWidth="140"
+                   prefHeight="40"
+                   defaultButton="true">
+                <font>
+                    <Font name="System Bold" size="13"/>
+                </font>
+            </Button>
+            
+            <Button text="Cancelar"
+                   onAction="#handleCancelar"
+                   styleClass="secondary-button"
+                   prefWidth="140"
+                   prefHeight="40">
+                <font>
+                    <Font name="System Bold" size="13"/>
+                </font>
+            </Button>
+        </HBox>
+    </VBox>
+
+    <!-- Link para volver al login -->
+    <HBox alignment="CENTER" spacing="5">
+        <Label text="¿Ya tienes cuenta?" styleClass="link-label">
+            <font>
+                <Font size="12"/>
+            </font>
+        </Label>
+        <Hyperlink text="Inicia Sesión"
+                  onAction="#handleVolverLogin"
+                  styleClass="hyperlink">
+            <font>
+                <Font name="System Bold" size="12"/>
+            </font>
+        </Hyperlink>
+    </HBox>
+
+</VBox>

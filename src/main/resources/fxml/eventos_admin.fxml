@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.web.WebView?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.eventos.controllers.EventosAdminController"
+           stylesheets="@../css/styles.css">
+
+<BorderPane styleClass="root">
+
+    <!-- BARRA SUPERIOR -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="15" styleClass="top-bar">
+            <padding>
+                <Insets top="15" right="20" bottom="15" left="20"/>
+            </padding>
+
+            <!-- Menú Hamburguesa -->
+            <Button fx:id="menuButton"
+                   text="☰"
+                   onAction="#toggleMenu"
+                   styleClass="menu-button"
+                   prefWidth="50"
+                   prefHeight="50">
+                <font>
+                    <Font size="24"/>
+                </font>
+            </Button>
+
+            <!-- Título -->
+            <Label text="GESTIÓN DE EVENTOS - ADMIN" styleClass="app-title" style="-fx-text-fill: white;">
+                <font>
+                    <Font size="18" name="System Bold"/>
+                </font>
+            </Label>
+
+            <!-- Espaciador -->
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <!-- Avatar Usuario con Menú -->
+            <StackPane>
+                <Button fx:id="avatarButton"
+                       onAction="#togglePerfilMenu"
+                       styleClass="avatar-button"
+                       prefWidth="50"
+                       prefHeight="50">
+                    <graphic>
+                        <Label text="👤" styleClass="avatar-icon">
+                            <font>
+                                <Font size="24"/>
+                            </font>
+                        </Label>
+                    </graphic>
+                </Button>
+                
+                <!-- Menú Desplegable Perfil -->
+                <VBox fx:id="perfilMenu"
+                      visible="false"
+                      managed="false"
+                      styleClass="perfil-dropdown"
+                      spacing="0"
+                      translateX="0"
+                      translateY="55">
+                    <Button text="Mi Perfil" onAction="#handleMiPerfil" styleClass="dropdown-item"/>
+                    <Button text="Panel Admin" onAction="#handlePanelAdmin" styleClass="dropdown-item"/>
+                    <Button text="Configuración" onAction="#handleConfiguracion" styleClass="dropdown-item"/>
+                    <Separator/>
+                    <Button text="Cerrar Sesión" onAction="#handleCerrarSesionDropdown" styleClass="dropdown-item-danger"/>
+                </VBox>
+            </StackPane>
+        </HBox>
+    </top>
+
+    <!-- CONTENIDO CENTRAL - MAPA Y LISTADO -->
+    <center>
+        <VBox spacing="10">
+            <!-- Botones CRUD -->
+            <HBox alignment="CENTER_LEFT" spacing="15" styleClass="crud-bar">
+                <padding>
+                    <Insets top="15" right="20" bottom="10" left="20"/>
+                </padding>
+
+                <Button text="Crear Evento"
+                       onAction="#handleCrearEvento"
+                       styleClass="success-button"
+                       prefHeight="40"
+                       prefWidth="150">
+                    <font>
+                        <Font name="System Bold" size="13"/>
+                    </font>
+                </Button>
+
+                <Button text="Modificar Evento"
+                       onAction="#handleModificarEvento"
+                       styleClass="primary-button"
+                       prefHeight="40"
+                       prefWidth="150">
+                    <font>
+                        <Font name="System Bold" size="13"/>
+                    </font>
+                </Button>
+
+                <Button text="Eliminar Evento"
+                       onAction="#handleEliminarEvento"
+                       styleClass="danger-button"
+                       prefHeight="40"
+                       prefWidth="150">
+                    <font>
+                        <Font name="System Bold" size="13"/>
+                    </font>
+                </Button>
+            </HBox>
+
+            <!-- Mapa y Tabla -->
+        <SplitPane dividerPositions="0.6" styleClass="content-pane">
+            <!-- Panel Izquierdo - Mapa -->
+            <AnchorPane styleClass="map-container">
+                <WebView fx:id="mapaWebView"
+                        AnchorPane.topAnchor="0"
+                        AnchorPane.bottomAnchor="0"
+                        AnchorPane.leftAnchor="0"
+                        AnchorPane.rightAnchor="0"/>
+            </AnchorPane>
+
+            <!-- Panel Derecho - Lista de Eventos (Admin) -->
+            <VBox spacing="10" styleClass="events-list-container">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+
+                <!-- Barra de búsqueda para admin -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <TextField fx:id="busquedaField"
+                              promptText="Buscar evento por nombre..."
+                              HBox.hgrow="ALWAYS"
+                              styleClass="form-field"/>
+                    
+                    <Button text="🔍"
+                           onAction="#handleBuscar"
+                           styleClass="search-button"
+                           prefWidth="40"
+                           prefHeight="35">
+                        <font>
+                            <Font size="16"/>
+                        </font>
+                    </Button>
+                </HBox>
+
+                <Label text="Gestión de Eventos" styleClass="section-title">
+                    <font>
+                        <Font size="18" name="System Bold"/>
+                    </font>
+                </Label>
+
+                <!-- Filtros rápidos -->
+                <HBox spacing="5">
+                    <ComboBox fx:id="filtroTipoCombo"
+                             promptText="Tipo de Evento"
+                             prefWidth="150"
+                             onAction="#handleFiltrarTipo"/>
+                    
+                    <ComboBox fx:id="filtroEstadoCombo"
+                             promptText="Estado"
+                             prefWidth="120"
+                             onAction="#handleFiltrarEstado"/>
+                    
+                    <Button text="Limpiar Filtros"
+                           onAction="#handleLimpiarFiltros"
+                           styleClass="secondary-button"
+                           prefHeight="30"/>
+                </HBox>
+
+                <!-- Tabla de Eventos -->
+                <TableView fx:id="eventosTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+                        <TableColumn fx:id="nombreColumn" text="Nombre" prefWidth="150"/>
+                        <TableColumn fx:id="tipoColumn" text="Tipo" prefWidth="100"/>
+                        <TableColumn fx:id="fechaColumn" text="Fecha" prefWidth="120"/>
+                        <TableColumn fx:id="sedeColumn" text="Sede" prefWidth="120"/>
+                        <TableColumn fx:id="estadoColumn" text="Estado" prefWidth="80"/>
+                    </columns>
+                </TableView>
+
+                <!-- Info de evento seleccionado -->
+                <HBox spacing="10" alignment="CENTER">
+                    <Label fx:id="infoLabel" text="Selecciona un evento para ver detalles"
+                          styleClass="info-label"/>
+                </HBox>
+            </VBox>
+        </SplitPane>
+        </VBox>
+    </center>
+
+    <!-- MENÚ LATERAL (OCULTO POR DEFECTO) -->
+    <left>
+        <VBox fx:id="sideMenu"
+              styleClass="sidebar"
+              visible="false"
+              managed="false"
+              prefWidth="250">
+            <padding>
+                <Insets top="20" right="15" bottom="20" left="15"/>
+            </padding>
+
+            <Label text="MENÚ ADMIN" styleClass="sidebar-title">
+                <font>
+                    <Font size="20" name="System Bold"/>
+                </font>
+            </Label>
+
+            <Separator/>
+
+            <VBox spacing="5" VBox.vgrow="ALWAYS">
+                <padding>
+                    <Insets top="15"/>
+                </padding>
+
+                <Button text="🏢 Mis Sedes"
+                       onAction="#handleMisSedes"
+                       styleClass="menu-item-button"
+                       maxWidth="Infinity"/>
+
+                <Button text="🎭 Mis Eventos"
+                       onAction="#handleMisEventos"
+                       styleClass="menu-item-button"
+                       maxWidth="Infinity"/>
+
+                <Button text="👥 Gestionar Usuarios"
+                       onAction="#handleGestionarUsuarios"
+                       styleClass="menu-item-button"
+                       maxWidth="Infinity"/>
+
+                <Button text="📊 Estadísticas"
+                       onAction="#handleEstadisticas"
+                       styleClass="menu-item-button"
+                       maxWidth="Infinity"/>
+
+                <Separator/>
+
+                <Button text="👤 Mi Perfil"
+                       onAction="#handleMiPerfil"
+                       styleClass="menu-item-button"
+                       maxWidth="Infinity"/>
+
+                <Separator/>
+                
+                <Button text="🔄 Recargar Vista"
+                       onAction="#handleRecargarVista"
+                       styleClass="menu-item-button"
+                       maxWidth="Infinity">
+                    <tooltip>
+                        <Tooltip text="F5: Recargar todo | F6: Solo CSS"/>
+                    </tooltip>
+                </Button>
+
+                <Separator/>
+
+                <Button text="🚪 Cerrar Sesión"
+                       onAction="#handleCerrarSesion"
+                       styleClass="danger-button"
+                       maxWidth="Infinity"/>
+            </VBox>
+        </VBox>
+    </left>
+
+</BorderPane>
+
+<!-- Menú dropdown del perfil (overlay flotante) -->
+<VBox fx:id="perfilMenu"
+      visible="false"
+      managed="false"
+      styleClass="perfil-dropdown"
+      maxWidth="180"
+      maxHeight="200"
+      StackPane.alignment="TOP_RIGHT">
+    <StackPane.margin>
+        <Insets top="65" right="20"/>
+    </StackPane.margin>
+    
+    <Button text="👤 Mi Perfil"
+           onAction="#handleMiPerfil"
+           styleClass="dropdown-item"
+           maxWidth="Infinity"/>
+    
+    <Button text="⚙️ Configuración"
+           onAction="#handleConfiguracion"
+           styleClass="dropdown-item"
+           maxWidth="Infinity"/>
+    
+    <Separator/>
+    
+    <Button text="🚪 Cerrar Sesión"
+           onAction="#handleCerrarSesionDropdown"
+           styleClass="dropdown-item dropdown-item-danger"
+           maxWidth="Infinity"/>
+</VBox>
+
+</StackPane>

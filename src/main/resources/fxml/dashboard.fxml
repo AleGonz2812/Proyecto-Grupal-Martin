@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<!--
+    Vista del Dashboard Principal
+    
+    Pantalla principal tras el login exitoso.
+    Muestra:
+    - Barra superior con info del usuario y botón de logout
+    - Menú lateral con opciones según el rol del usuario
+    - Área central para cargar diferentes vistas (eventos, compras, etc.)
+    
+    Controlador: DashboardController.java
+-->
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.eventos.controllers.DashboardController"
+            prefHeight="800" prefWidth="1200">
+    
+    <!-- BARRA SUPERIOR (TOP) -->
+    <top>
+        <HBox styleClass="top-bar"
+              alignment="CENTER_LEFT"
+              spacing="20"
+              style="-fx-background-color: #2c3e50; -fx-padding: 15;">
+            
+            <!-- Título de la aplicación -->
+            <Text text="Sistema de Gestión de Eventos"
+                  fill="WHITE"
+                  style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+            
+            <!-- Espaciador flexible -->
+            <Region HBox.hgrow="ALWAYS"/>
+            
+            <!-- Información del usuario -->
+            <HBox alignment="CENTER" spacing="15">
+                <Label fx:id="welcomeLabel"
+                       text="Bienvenido/a"
+                       textFill="WHITE"
+                       style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+                
+                <Label fx:id="roleLabel"
+                       text="[Rol]"
+                       textFill="#95a5a6"
+                       style="-fx-font-size: 12;"/>
+                
+                <!-- Botón de cerrar sesión -->
+                <Button fx:id="logoutButton"
+                        text="Cerrar Sesión"
+                        onAction="#handleLogout"
+                        style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;"/>
+            </HBox>
+        </HBox>
+    </top>
+    
+    <!-- MENÚ LATERAL (LEFT) -->
+    <left>
+        <VBox styleClass="sidebar"
+              spacing="10"
+              style="-fx-background-color: #34495e; -fx-padding: 20; -fx-min-width: 250;">
+            
+            <!-- Título del menú -->
+            <Label text="MENÚ PRINCIPAL"
+                   textFill="WHITE"
+                   style="-fx-font-size: 16; -fx-font-weight: bold;">
+                <VBox.margin>
+                    <Insets bottom="20"/>
+                </VBox.margin>
+            </Label>
+            
+            <Separator style="-fx-background-color: white;"/>
+            
+            <!-- Opciones del menú -->
+            <VBox spacing="5" fx:id="menuContainer">
+                
+                <!-- Inicio -->
+                <Button text="🏠 Inicio"
+                        onAction="#handleInicio"
+                        prefWidth="210"
+                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-font-size: 14;"/>
+                
+                <!-- Eventos -->
+                <Button text="🎭 Eventos"
+                        onAction="#handleEventos"
+                        prefWidth="210"
+                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-font-size: 14;"/>
+                
+                <!-- Mis Entradas -->
+                <Button text="🎟️ Mis Entradas"
+                        onAction="#handleMisEntradas"
+                        prefWidth="210"
+                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-font-size: 14;"/>
+                
+                <!-- Comprar Entradas -->
+                <Button text="🛒 Comprar Entradas"
+                        onAction="#handleComprar"
+                        prefWidth="210"
+                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-font-size: 14;"/>
+                
+                <Separator style="-fx-background-color: white;">
+                    <VBox.margin>
+                        <Insets top="10" bottom="10"/>
+                    </VBox.margin>
+                </Separator>
+                
+                <!-- OPCIONES DE ADMINISTRADOR (solo visible si es admin) -->
+                <VBox fx:id="adminMenuContainer" spacing="5">
+                    <Label text="ADMINISTRACIÓN"
+                           textFill="#95a5a6"
+                           style="-fx-font-size: 12; -fx-font-weight: bold;">
+                        <VBox.margin>
+                            <Insets bottom="5"/>
+                        </VBox.margin>
+                    </Label>
+                    
+                    <Button text="👥 Gestión de Usuarios"
+                            onAction="#handleGestionUsuarios"
+                            prefWidth="210"
+                            style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-font-size: 14;"/>
+                    
+                    <Button text="🎪 Gestión de Eventos"
+                            onAction="#handleGestionEventos"
+                            prefWidth="210"
+                            style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-font-size: 14;"/>
+                    
+                    <Button text="🏢 Gestión de Sedes"
+                            onAction="#handleGestionSedes"
+                            prefWidth="210"
+                            style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-font-size: 14;"/>
+                    
+                    <Button text="📊 Reportes"
+                            onAction="#handleReportes"
+                            prefWidth="210"
+                            style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-font-size: 14;"/>
+                </VBox>
+            </VBox>
+            
+            <!-- Espaciador -->
+            <Region VBox.vgrow="ALWAYS"/>
+            
+            <!-- Pie del menú -->
+            <VBox alignment="CENTER" spacing="5">
+                <Separator style="-fx-background-color: white;"/>
+                <Label text="Versión 1.0.0"
+                       textFill="#95a5a6"
+                       style="-fx-font-size: 10;"/>
+            </VBox>
+        </VBox>
+    </left>
+    
+    <!-- ÁREA CENTRAL (CENTER) -->
+    <center>
+        <StackPane fx:id="contentArea"
+                   style="-fx-background-color: #ecf0f1; -fx-padding: 30;">
+            
+            <!-- Contenido inicial (Home) -->
+            <VBox alignment="CENTER" spacing="30">
+                <Text text="Bienvenido al Sistema de Gestión de Eventos"
+                      style="-fx-font-size: 28; -fx-font-weight: bold; -fx-fill: #2c3e50;"/>
+                
+                <Text fx:id="welcomeMessageText"
+                      text="Selecciona una opción del menú para comenzar"
+                      style="-fx-font-size: 16; -fx-fill: #7f8c8d;"/>
+                
+                <!-- Panel de estadísticas rápidas -->
+                <HBox spacing="20" alignment="CENTER">
+                    
+                    <!-- Card: Próximos Eventos -->
+                    <VBox alignment="CENTER"
+                          spacing="10"
+                          style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+                        <Text text="🎭" style="-fx-font-size: 40;"/>
+                        <Text text="Próximos Eventos" style="-fx-font-size: 14; -fx-fill: #7f8c8d;"/>
+                        <Text fx:id="eventosCountText" text="0" style="-fx-font-size: 32; -fx-font-weight: bold; -fx-fill: #3498db;"/>
+                    </VBox>
+                    
+                    <!-- Card: Mis Entradas -->
+                    <VBox alignment="CENTER"
+                          spacing="10"
+                          style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+                        <Text text="🎟️" style="-fx-font-size: 40;"/>
+                        <Text text="Mis Entradas" style="-fx-font-size: 14; -fx-fill: #7f8c8d;"/>
+                        <Text fx:id="entradasCountText" text="0" style="-fx-font-size: 32; -fx-font-weight: bold; -fx-fill: #2ecc71;"/>
+                    </VBox>
+                    
+                    <!-- Card: Total Usuarios (solo admin) -->
+                    <VBox fx:id="adminStatsCard"
+                          alignment="CENTER"
+                          spacing="10"
+                          style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);"
+                          visible="false">
+                        <Text text="👥" style="-fx-font-size: 40;"/>
+                        <Text text="Total Usuarios" style="-fx-font-size: 14; -fx-fill: #7f8c8d;"/>
+                        <Text fx:id="usuariosCountText" text="0" style="-fx-font-size: 32; -fx-font-weight: bold; -fx-fill: #9b59b6;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </StackPane>
+    </center>
+    
+</BorderPane>

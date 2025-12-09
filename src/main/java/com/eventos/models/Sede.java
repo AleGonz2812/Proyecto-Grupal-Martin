@@ -42,6 +42,12 @@ public class Sede {
     @Column(columnDefinition = "TEXT")
     private String descripcion;
     
+    @Column
+    private Double latitud;
+    
+    @Column
+    private Double longitud;
+    
     @OneToMany(mappedBy = "sede", cascade = CascadeType.ALL)
     private List<Evento> eventos = new ArrayList<>();
     
@@ -154,5 +160,21 @@ public class Sede {
     
     public void setEquipamientos(List<Equipamiento> equipamientos) {
         this.equipamientos = equipamientos;
+    }
+    
+    public Double getLatitud() {
+        return latitud;
+    }
+    
+    public void setLatitud(Double latitud) {
+        this.latitud = latitud;
+    }
+    
+    public Double getLongitud() {
+        return longitud;
+    }
+    
+    public void setLongitud(Double longitud) {
+        this.longitud = longitud;
     }
 }
