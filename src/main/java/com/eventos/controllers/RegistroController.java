@@ -245,10 +245,10 @@ public class RegistroController {
 
             // Determinar el rol según el checkbox
             boolean esAdmin = esAdminCheckBox != null && esAdminCheckBox.isSelected();
-            Long rolId = esAdmin ? 1L : 2L; // 1 = Admin, 2 = Usuario
-            
-            Rol rol = rolRepository.findById(rolId)
-                .orElseThrow(() -> new ValidationException("No se encontró el rol"));
+            String rolNombre = esAdmin ? "ADMIN" : "USUARIO";
+
+            Rol rol = rolRepository.findByNombre(rolNombre)
+                .orElseThrow(() -> new ValidationException("No se encontró el rol " + rolNombre + ". Ejecuta la app una vez para inicializar datos."));
 
             // Crear nuevo usuario
             Usuario nuevoUsuario = new Usuario();

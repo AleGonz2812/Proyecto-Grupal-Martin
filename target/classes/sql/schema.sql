@@ -75,6 +75,8 @@ CREATE TABLE IF NOT EXISTS sedes (
     activa BOOLEAN NOT NULL DEFAULT TRUE,
     telefono VARCHAR(20),
     descripcion TEXT,
+    latitud DECIMAL(10,6),
+    longitud DECIMAL(10,6),
     INDEX idx_ciudad (ciudad),
     INDEX idx_activa (activa)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

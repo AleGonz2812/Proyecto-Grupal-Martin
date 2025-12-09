@@ -131,6 +131,18 @@
             setTimeout(() => map.invalidateSize(), 120);
         });
 
+        // Ajustar el mapa al redimensionar el contenedor (pantallas pequeñas/portátiles)
+        const reacomodarMapa = () => {
+            map.invalidateSize();
+            if (typeof baseLayer.redraw === 'function') {
+                baseLayer.redraw();
+            }
+        };
+
+        window.addEventListener('resize', () => {
+            requestAnimationFrame(reacomodarMapa);
+        });
+
         // Refrescar teselas al abrir/cerrar popups para evitar huecos
         const refrescarTeselas = () => {
             map.invalidateSize();

@@ -64,12 +64,12 @@ INSERT INTO tipos_evento (nombre, descripcion, categoria) VALUES
 -- ============================================
 -- Insertar Sedes
 -- ============================================
-INSERT INTO sedes (nombre, direccion, ciudad, provincia, codigo_postal, capacidad, activa, telefono, descripcion) VALUES
-('Auditorio Nacional', 'Paseo de la Castellana 99', 'Madrid', 'Madrid', '28046', 5000, TRUE, '912345678', 'Gran auditorio con excelente acústica'),
-('Palacio de Congresos', 'Avenida Diagonal 661', 'Barcelona', 'Barcelona', '08028', 3000, TRUE, '934567890', 'Espacio versátil para eventos corporativos y culturales'),
-('Teatro Principal', 'Calle Mayor 10', 'Valencia', 'Valencia', '46001', 800, TRUE, '963456789', 'Teatro histórico restaurado'),
-('Estadio Municipal', 'Avenida del Estadio 1', 'Sevilla', 'Sevilla', '41005', 15000, TRUE, '954567890', 'Estadio deportivo multiusos'),
-('Centro de Convenciones', 'Plaza España 5', 'Zaragoza', 'Zaragoza', '50001', 2000, TRUE, '976234567', 'Moderno centro de convenciones');
+INSERT INTO sedes (nombre, direccion, ciudad, provincia, codigo_postal, capacidad, activa, telefono, descripcion, latitud, longitud) VALUES
+('Auditorio Nacional', 'Paseo de la Castellana 99', 'Madrid', 'Madrid', '28046', 5000, TRUE, '912345678', 'Gran auditorio con excelente acústica', 40.472100, -3.688800),
+('Palacio de Congresos', 'Avenida Diagonal 661', 'Barcelona', 'Barcelona', '08028', 3000, TRUE, '934567890', 'Espacio versátil para eventos corporativos y culturales', 41.385900, 2.128000),
+('Teatro Principal', 'Calle Mayor 10', 'Valencia', 'Valencia', '46001', 800, TRUE, '963456789', 'Teatro histórico restaurado', 39.475100, -0.376300),
+('Estadio Municipal', 'Avenida del Estadio 1', 'Sevilla', 'Sevilla', '41005', 15000, TRUE, '954567890', 'Estadio deportivo multiusos', 37.380100, -5.970100),
+('Centro de Convenciones', 'Plaza España 5', 'Zaragoza', 'Zaragoza', '50001', 2000, TRUE, '976234567', 'Moderno centro de convenciones', 41.648800, -0.889100);
 
 -- ============================================
 -- Insertar Equipamiento
