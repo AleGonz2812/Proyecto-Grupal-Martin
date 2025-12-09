@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
+             https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+
+    <persistence-unit name="EventosPU" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        
+        <!-- Entidades -->
+        <class>com.eventos.models.Usuario</class>
+        <class>com.eventos.models.Rol</class>
+        <class>com.eventos.models.Evento</class>
+        <class>com.eventos.models.TipoEvento</class>
+        <class>com.eventos.models.Sede</class>
+        <class>com.eventos.models.Equipamiento</class>
+        <class>com.eventos.models.TipoEntrada</class>
+        <class>com.eventos.models.Entrada</class>
+        <class>com.eventos.models.Compra</class>
+        <class>com.eventos.models.RegistroEntrada</class>
+
+        <properties>
+            <!-- Configuración de conexión MySQL (XAMPP) -->
+            <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/eventos_db?createDatabaseIfNotExist=true&amp;useSSL=false&amp;serverTimezone=UTC"/>
+            <property name="jakarta.persistence.jdbc.user" value="root"/>
+            <property name="jakarta.persistence.jdbc.password" value=""/>
+
+            <!-- Configuración de Hibernate -->
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            
+            <!-- Configuración de caracteres UTF-8 -->
+            <property name="hibernate.connection.characterEncoding" value="UTF-8"/>
+            <property name="hibernate.connection.useUnicode" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence>

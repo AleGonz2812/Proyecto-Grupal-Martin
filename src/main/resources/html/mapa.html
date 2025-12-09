@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Eventos</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        #map {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        /* Ajustes Leaflet */
+        .leaflet-container {
+            background: #eef6ff;
+        }
+        .leaflet-popup-content-wrapper {
+            padding-right: 8px;
+            max-width: 260px;
+            border-radius: 8px;
+        }
+        .leaflet-popup-content {
+            margin: 8px 10px;
+            max-height: 240px;
+            overflow: auto;
+            padding-right: 12px; /* deja espacio para scroll sin chocar con la X */
+            max-width: 240px;
+        }
+        .leaflet-popup-tip {
+            display: none; /* sin flecha para popup cuadrado */
+        }
+        .leaflet-container .leaflet-popup-close-button {
+            right: 8px;
+            top: 8px;
+        }
+        .leaflet-popup-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .leaflet-popup-content::-webkit-scrollbar-thumb {
+            background: #bdc3c7;
+            border-radius: 4px;
+        }
+        .leaflet-popup-content::-webkit-scrollbar-track {
+            background: #ecf0f1;
+        }
+        .leaflet-popup-content {
+            margin: 8px 10px;
+        }
+        .custom-popup {
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .popup-title {
+            font-weight: bold;
+            font-size: 14px;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .popup-info {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-bottom: 3px;
+        }
+        .popup-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 8px;
+            width: 100%;
+        }
+        .popup-button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        console.log('Inicializando mapa de España...');
+        
+        // Inicializar mapa centrado en España
+        const map = L.map('map', {
+            center: [40.0, -3.5],
+            zoom: 6.2,
+            minZoom: 5.5,
+            maxZoom: 8,
+            zoomControl: false,
+            dragging: false,
+            scrollWheelZoom: false,
+            doubleClickZoom: false,
+            boxZoom: false,
+            touchZoom: false,
+            keyboard: false,
+            preferCanvas: true,
+            zoomAnimation: false,
+            fadeAnimation: false,
+            markerZoomAnimation: false
+        });
+        
+        // Añadir capa de OpenStreetMap
+        const baseLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap',
+            updateWhenIdle: true
+        }).addTo(map);
+        
+        console.log('Mapa creado y tiles agregados');
+        
+        map.whenReady(() => {
+            setTimeout(() => map.invalidateSize(), 120);
+        });
+
+        // Refrescar teselas al abrir/cerrar popups para evitar huecos
+        const refrescarTeselas = () => {
+            map.invalidateSize();
+            if (typeof baseLayer.redraw === 'function') {
+                baseLayer.redraw();
+            }
+        };
+
+        map.on('popupopen', (e) => {
+            refrescarTeselas();
+            ajustarPopupEnPantalla(e.popup);
+        });
+
+        map.on('popupclose', (e) => {
+            const popupEl = e.popup.getElement();
+            if (popupEl) {
+                popupEl.style.transform = 'translate(0px, 0px)';
+            }
+            refrescarTeselas();
+        });
+        
+        // Marcadores con color fijo (rojo) para uniformidad
+        const colorMarcador = '#e74c3c';
+        
+        // Almacenar marcadores y eventos agrupados por sede
+        let marcadores = [];
+        let eventosPorSede = {};
+
+        // Decide un offset base según posición relativa del marcador
+        function obtenerOpcionesPopup(lat, lng) {
+            const point = map.latLngToContainerPoint([lat, lng]);
+            const mitadY = map.getSize().y / 2;
+            const abreAbajo = point.y < mitadY;
+
+            return {
+                maxHeight: 400,
+                maxWidth: 300,
+                autoPan: false,
+                closeButton: true,
+                offset: [0, abreAbajo ? 18 : -18]
+            };
+        }
+
+        // Ajusta el popup si se desborda del contenedor
+        function ajustarPopupEnPantalla(popup) {
+            const popupEl = popup.getElement();
+            if (!popupEl) return;
+            popupEl.style.transform = 'translate(0px, 0px)';
+
+            const mapRect = document.getElementById('map').getBoundingClientRect();
+            const rect = popupEl.getBoundingClientRect();
+            const margen = 10;
+
+            let dy = 0;
+            if (rect.top < mapRect.top + margen) {
+                dy = (mapRect.top + margen) - rect.top;
+            } else if (rect.bottom > mapRect.bottom - margen) {
+                dy = (mapRect.bottom - margen) - rect.bottom;
+            }
+
+            let dx = 0;
+            if (rect.left < mapRect.left + margen) {
+                dx = (mapRect.left + margen) - rect.left;
+            } else if (rect.right > mapRect.right - margen) {
+                dx = (mapRect.right - margen) - rect.right;
+            }
+
+            if (dx !== 0 || dy !== 0) {
+                popupEl.style.transform = `translate(${dx}px, ${dy}px)`;
+            }
+        }
+        
+        // Función para agregar marcador - AGRUPA EVENTOS POR SEDE
+        function agregarMarcador(lat, lng, nombre, sede, fecha, tipo, id) {
+            console.log(`Agregando marcador: ${nombre} en ${sede} (${lat}, ${lng})`);
+            
+            const key = `${lat},${lng}`;
+            
+            // Agregar evento al grupo de su sede
+            if (!eventosPorSede[key]) {
+                eventosPorSede[key] = {
+                    lat: lat,
+                    lng: lng,
+                    sede: sede,
+                    eventos: []
+                };
+            }
+            eventosPorSede[key].eventos.push({
+                id: id,
+                nombre: nombre,
+                fecha: fecha,
+                tipo: tipo
+            });
+            
+            // Si ya existe un marcador para esta ubicación, actualizarlo
+            const marcadorExistente = marcadores.find(m => m.key === key);
+            if (marcadorExistente) {
+                map.removeLayer(marcadorExistente.marcador);
+                marcadores = marcadores.filter(m => m.key !== key);
+            }
+            
+            // Color neutro para consistencia
+            const color = colorMarcador;
+            
+            const numEventos = eventosPorSede[key].eventos.length;
+            
+            // Crear popup con todos los eventos de esta sede
+            let popupHTML = `<div class="custom-popup">
+                <div class="popup-title">📍 ${eventosPorSede[key].sede}</div>
+                <div class="popup-info" style="font-weight: bold; margin-bottom: 10px;">${numEventos} evento(s)</div>`;
+            
+            eventosPorSede[key].eventos.forEach(evt => {
+                popupHTML += `
+                    <div style="border-top: 1px solid #eee; padding-top: 8px; margin-top: 8px;">
+                        <div style="font-weight: bold; color: #2c3e50;">${evt.nombre}</div>
+                        <div class="popup-info">📅 ${evt.fecha}</div>
+                        <div class="popup-info">🎭 ${evt.tipo}</div>
+                        <button class="popup-button" onclick="seleccionarEvento(${evt.id})">Ver Detalles</button>
+                    </div>`;
+            });
+            
+            popupHTML += `</div>`;
+            
+            // Crear marcador tamaño fijo para uniformidad
+            const radius = 12;
+            
+            const marcador = L.circleMarker([lat, lng], {
+                radius: radius,
+                fillColor: color,
+                color: '#ffffff',
+                weight: 3,
+                opacity: 1,
+                fillOpacity: 0.9,
+                interactive: true
+            })
+                .addTo(map)
+                .bindPopup(popupHTML, { ...obtenerOpcionesPopup(lat, lng), maxWidth: 260 });
+            
+            marcadores.push({ key: key, marcador: marcador, id: id });
+            console.log(`Marcador creado en [${lat}, ${lng}] con ${numEventos} evento(s)`);
+        }
+        
+        // Función para forzar repaint (llamar desde Java después de agregar todos los marcadores)
+        function forzarRepaint() {
+            map.invalidateSize();
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 50);
+        }
+        
+        // Función para limpiar marcadores
+        function limpiarMarcadores() {
+            marcadores.forEach(item => {
+                map.removeLayer(item.marcador);
+            });
+            marcadores = [];
+            eventosPorSede = {};
+        }
+        
+        // Función para seleccionar evento (llamada desde botón popup)
+        function seleccionarEvento(eventoId) {
+            // Comunicar con Java usando el objeto expuesto
+            if (window.javaController) {
+                window.javaController.seleccionarEventoDesdeJS(eventoId);
+            }
+        }
+        
+        // Función para centrar en un marcador
+        function centrarEnEvento(eventoId) {
+            const item = marcadores.find(m => m.id === eventoId);
+            if (item) {
+                map.setView(item.marcador.getLatLng(), 12);
+                item.marcador.openPopup();
+            }
+        }
+        
+        // Exponer funciones para Java
+        window.agregarMarcador = agregarMarcador;
+        window.limpiarMarcadores = limpiarMarcadores;
+        window.centrarEnEvento = centrarEnEvento;
+        window.forzarRepaint = forzarRepaint;
+        
+        console.log('Funciones expuestas a Java:', {
+            agregarMarcador: typeof window.agregarMarcador,
+            limpiarMarcadores: typeof window.limpiarMarcadores,
+            forzarRepaint: typeof window.forzarRepaint
+        });
+    </script>
+</body>
+</html>

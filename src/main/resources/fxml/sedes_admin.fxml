@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.eventos.controllers.SedesAdminController"
+           stylesheets="@../css/styles.css">
+
+<BorderPane styleClass="root">
+
+    <!-- BARRA SUPERIOR -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="15" styleClass="top-bar">
+            <padding>
+                <Insets top="15" right="20" bottom="15" left="20"/>
+            </padding>
+
+            <!-- Menú Hamburguesa -->
+            <Button fx:id="menuButton"
+                   text="☰"
+                   onAction="#toggleMenu"
+                   styleClass="menu-button"
+                   prefWidth="50"
+                   prefHeight="50">
+                <font>
+                    <Font size="24"/>
+                </font>
+            </Button>
+
+            <!-- Título -->
+            <Label text="GESTIÓN DE SEDES - ADMIN" styleClass="app-title" style="-fx-text-fill: white;">
+                <font>
+                    <Font size="18" name="System Bold"/>
+                </font>
+            </Label>
+
+            <!-- Espaciador -->
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <!-- Avatar Usuario con Menú -->
+            <StackPane>
+                <Button fx:id="avatarButton"
+                       onAction="#togglePerfilMenu"
+                       styleClass="avatar-button"
+                       prefWidth="50"
+                       prefHeight="50">
+                    <graphic>
+                        <Label text="👤" styleClass="avatar-icon">
+                            <font>
+                                <Font size="24"/>
+                            </font>
+                        </Label>
+                    </graphic>
+                </Button>
+                
+                <!-- Menú Desplegable Perfil -->
+                <VBox fx:id="perfilMenu"
+                      visible="false"
+                      managed="false"
+                      styleClass="perfil-dropdown"
+                      spacing="0"
+                      translateX="0"
+                      translateY="55">
+                    <Button text="Mi Perfil" onAction="#handleMiPerfil" styleClass="dropdown-item"/>
+                    <Button text="Panel Admin" onAction="#handlePanelAdmin" styleClass="dropdown-item"/>
+                    <Button text="Configuración" onAction="#handleConfiguracion" styleClass="dropdown-item"/>
+                    <Separator/>
+                    <Button text="Cerrar Sesión" onAction="#handleCerrarSesionDropdown" styleClass="dropdown-item-danger"/>
+                </VBox>
+            </StackPane>
+        </HBox>
+    </top>
+
+    <!-- CONTENIDO CENTRAL -->
+    <center>
+        <VBox spacing="10" styleClass="content-pane">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <!-- Botones CRUD -->
+            <HBox alignment="CENTER_LEFT" spacing="15" styleClass="crud-bar">
+                <padding>
+                    <Insets top="10" right="0" bottom="10" left="0"/>
+                </padding>
+
+                <Button text="Crear Sede"
+                       onAction="#handleCrearSede"
+                       styleClass="success-button"
+                       prefHeight="40"
+                       prefWidth="150">
+                    <font>
+                        <Font name="System Bold" size="13"/>
+                    </font>
+                </Button>
+
+                <Button text="Modificar Sede"
+                       onAction="#handleModificarSede"
+                       styleClass="primary-button"
+                       prefHeight="40"
+                       prefWidth="150">
+                    <font>
+                        <Font name="System Bold" size="13"/>
+                    </font>
+                </Button>
+
+                <Button text="Eliminar Sede"
+                       onAction="#handleEliminarSede"
+                       styleClass="danger-button"
+                       prefHeight="40"
+                       prefWidth="150">
+                    <font>
+                        <Font name="System Bold" size="13"/>
+                    </font>
+                </Button>
+
+                <!-- Espaciador -->
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button text="← Volver a Eventos"
+                       onAction="#handleVolverEventos"
+                       styleClass="secondary-button"
+                       prefHeight="40"
+                       prefWidth="180">
+                    <font>
+                        <Font name="System Bold" size="13"/>
+                    </font>
+                </Button>
+            </HBox>
+
+            <!-- Barra de búsqueda -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="busquedaField"
+                          promptText="Buscar sede por nombre o dirección..."
+                          HBox.hgrow="ALWAYS"
+                          styleClass="form-field"
+                          prefHeight="40"/>
+                
+                <Button text="🔍"
+                       onAction="#handleBuscar"
+                       styleClass="search-button"
+                       prefWidth="40"
+                       prefHeight="40">
+                    <font>
+                        <Font size="16"/>
+                    </font>
+                </Button>
+            </HBox>
+
+            <Label text="Gestión de Sedes" styleClass="section-title">
+                <font>
+                    <Font size="18" name="System Bold"/>
+                </font>
+            </Label>
+
+            <!-- Filtros rápidos -->
+            <HBox spacing="10">
+                <ComboBox fx:id="filtroCiudadCombo"
+                         promptText="Ciudad"
+                         prefWidth="180"
+                         styleClass="form-field"
+                         onAction="#handleFiltrarCiudad"/>
+                
+                <ComboBox fx:id="filtroActivaCombo"
+                         promptText="Estado"
+                         prefWidth="150"
+                         styleClass="form-field"
+                         onAction="#handleFiltrarActiva"/>
+                
+                <Button text="Limpiar Filtros"
+                       onAction="#handleLimpiarFiltros"
+                       styleClass="secondary-button"
+                       prefHeight="35"/>
+            </HBox>
+
+            <!-- Tabla de Sedes -->
+            <TableView fx:id="sedesTable" VBox.vgrow="ALWAYS" styleClass="custom-table">
+                <columns>
+                    <TableColumn fx:id="idColumn" text="ID" prefWidth="60" styleClass="table-column"/>
+                    <TableColumn fx:id="nombreColumn" text="Nombre" prefWidth="200" styleClass="table-column"/>
+                    <TableColumn fx:id="direccionColumn" text="Dirección" prefWidth="250" styleClass="table-column"/>
+                    <TableColumn fx:id="ciudadColumn" text="Ciudad" prefWidth="150" styleClass="table-column"/>
+                    <TableColumn fx:id="capacidadColumn" text="Capacidad" prefWidth="100" styleClass="table-column"/>
+                    <TableColumn fx:id="activaColumn" text="Estado" prefWidth="100" styleClass="table-column"/>
+                </columns>
+            </TableView>
+
+            <!-- Info de sede seleccionada -->
+            <HBox spacing="10" alignment="CENTER" styleClass="info-bar">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+                <Label fx:id="infoLabel" 
+                       text="Selecciona una sede para ver detalles"
+                       styleClass="info-label"
+                       style="-fx-text-fill: white;">
+                    <font>
+                        <Font size="13"/>
+                    </font>
+                </Label>
+            </HBox>
+        </VBox>
+    </center>
+
+    <!-- MENÚ LATERAL (OCULTO POR DEFECTO) -->
+    <left>
+        <VBox fx:id="sideMenu"
+              visible="false"
+              managed="false"
+              styleClass="side-menu"
+              spacing="5"
+              prefWidth="250">
+            <padding>
+                <Insets top="20" right="15" bottom="20" left="15"/>
+            </padding>
+
+            <Label text="MENÚ" styleClass="menu-header">
+                <font>
+                    <Font size="16" name="System Bold"/>
+                </font>
+            </Label>
+
+            <Separator/>
+
+            <Button text="🏢 Gestión de Sedes" 
+                    onAction="#handleVolverEventos"
+                    styleClass="menu-item-selected"
+                    prefHeight="40"
+                    alignment="CENTER_LEFT">
+                <font>
+                    <Font size="13"/>
+                </font>
+            </Button>
+
+            <Button text="🎫 Gestión de Eventos" 
+                    onAction="#handleVolverEventos"
+                    styleClass="menu-item"
+                    prefHeight="40"
+                    alignment="CENTER_LEFT">
+                <font>
+                    <Font size="13"/>
+                </font>
+            </Button>
+
+            <Button text="👥 Usuarios" 
+                    styleClass="menu-item"
+                    prefHeight="40"
+                    alignment="CENTER_LEFT">
+                <font>
+                    <Font size="13"/>
+                </font>
+            </Button>
+
+            <Button text="📊 Reportes" 
+                    styleClass="menu-item"
+                    prefHeight="40"
+                    alignment="CENTER_LEFT">
+                <font>
+                    <Font size="13"/>
+                </font>
+            </Button>
+
+            <Button text="⚙️ Configuración" 
+                    onAction="#handleConfiguracion"
+                    styleClass="menu-item"
+                    prefHeight="40"
+                    alignment="CENTER_LEFT">
+                <font>
+                    <Font size="13"/>
+                </font>
+            </Button>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Separator/>
+
+            <Button text="🚪 Cerrar Sesión" 
+                    onAction="#handleCerrarSesion"
+                    styleClass="menu-item-danger"
+                    prefHeight="40"
+                    alignment="CENTER_LEFT">
+                <font>
+                    <Font size="13"/>
+                </font>
+            </Button>
+        </VBox>
+    </left>
+
+</BorderPane>
+
+</StackPane>
