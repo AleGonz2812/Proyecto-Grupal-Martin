@@ -366,6 +366,7 @@ public class DashboardController {
      * 
      * @param rutaFxml Ruta del archivo FXML a cargar
      */
+    @SuppressWarnings("unused")
     private void cargarVista(String rutaFxml) {
         try {
             logger.info("Cargando vista: {}", rutaFxml);

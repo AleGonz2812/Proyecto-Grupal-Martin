@@ -4,12 +4,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.web.WebView?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.eventos.controllers.EventosAdminController"
-            stylesheets="@../css/styles.css"
-            styleClass="root">
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.eventos.controllers.EventosAdminController"
+           stylesheets="@../css/styles.css">
+
+<BorderPane styleClass="root">
 
     <!-- BARRA SUPERIOR -->
     <top>
@@ -40,20 +42,37 @@
             <!-- Espaciador -->
             <Region HBox.hgrow="ALWAYS"/>
 
-            <!-- Avatar Usuario -->
-            <Button fx:id="avatarButton"
-                   onAction="#handlePerfil"
-                   styleClass="avatar-button"
-                   prefWidth="50"
-                   prefHeight="50">
-                <graphic>
-                    <Label text="👤" styleClass="avatar-icon">
-                        <font>
-                            <Font size="24"/>
-                        </font>
-                    </Label>
-                </graphic>
-            </Button>
+            <!-- Avatar Usuario con Menú -->
+            <StackPane>
+                <Button fx:id="avatarButton"
+                       onAction="#togglePerfilMenu"
+                       styleClass="avatar-button"
+                       prefWidth="50"
+                       prefHeight="50">
+                    <graphic>
+                        <Label text="👤" styleClass="avatar-icon">
+                            <font>
+                                <Font size="24"/>
+                            </font>
+                        </Label>
+                    </graphic>
+                </Button>
+                
+                <!-- Menú Desplegable Perfil -->
+                <VBox fx:id="perfilMenu"
+                      visible="false"
+                      managed="false"
+                      styleClass="perfil-dropdown"
+                      spacing="0"
+                      translateX="0"
+                      translateY="55">
+                    <Button text="Mi Perfil" onAction="#handleMiPerfil" styleClass="dropdown-item"/>
+                    <Button text="Panel Admin" onAction="#handlePanelAdmin" styleClass="dropdown-item"/>
+                    <Button text="Configuración" onAction="#handleConfiguracion" styleClass="dropdown-item"/>
+                    <Separator/>
+                    <Button text="Cerrar Sesión" onAction="#handleCerrarSesionDropdown" styleClass="dropdown-item-danger"/>
+                </VBox>
+            </StackPane>
         </HBox>
     </top>
 
@@ -101,18 +120,11 @@
         <SplitPane dividerPositions="0.6" styleClass="content-pane">
             <!-- Panel Izquierdo - Mapa -->
             <AnchorPane styleClass="map-container">
-                <Label text="MAPA INTERACTIVO"
-                      styleClass="map-placeholder"
-                      alignment="CENTER"
-                      AnchorPane.topAnchor="0"
-                      AnchorPane.bottomAnchor="0"
-                      AnchorPane.leftAnchor="0"
-                      AnchorPane.rightAnchor="0">
-                    <font>
-                        <Font size="24" name="System Bold"/>
-                    </font>
-                </Label>
-                <!-- Aquí se integrará Google Maps / OpenStreetMap -->
+                <WebView fx:id="mapaWebView"
+                        AnchorPane.topAnchor="0"
+                        AnchorPane.bottomAnchor="0"
+                        AnchorPane.leftAnchor="0"
+                        AnchorPane.rightAnchor="0"/>
             </AnchorPane>
 
             <!-- Panel Derecho - Lista de Eventos (Admin) -->
@@ -232,9 +244,20 @@
                 <Separator/>
 
                 <Button text="👤 Mi Perfil"
-                       onAction="#handlePerfil"
+                       onAction="#handleMiPerfil"
                        styleClass="menu-item-button"
                        maxWidth="Infinity"/>
+
+                <Separator/>
+                
+                <Button text="🔄 Recargar Vista"
+                       onAction="#handleRecargarVista"
+                       styleClass="menu-item-button"
+                       maxWidth="Infinity">
+                    <tooltip>
+                        <Tooltip text="F5: Recargar todo | F6: Solo CSS"/>
+                    </tooltip>
+                </Button>
 
                 <Separator/>
 
@@ -247,3 +270,35 @@
     </left>
 
 </BorderPane>
+
+<!-- Menú dropdown del perfil (overlay flotante) -->
+<VBox fx:id="perfilMenu"
+      visible="false"
+      managed="false"
+      styleClass="perfil-dropdown"
+      maxWidth="180"
+      maxHeight="200"
+      StackPane.alignment="TOP_RIGHT">
+    <StackPane.margin>
+        <Insets top="65" right="20"/>
+    </StackPane.margin>
+    
+    <Button text="👤 Mi Perfil"
+           onAction="#handleMiPerfil"
+           styleClass="dropdown-item"
+           maxWidth="Infinity"/>
+    
+    <Button text="⚙️ Configuración"
+           onAction="#handleConfiguracion"
+           styleClass="dropdown-item"
+           maxWidth="Infinity"/>
+    
+    <Separator/>
+    
+    <Button text="🚪 Cerrar Sesión"
+           onAction="#handleCerrarSesionDropdown"
+           styleClass="dropdown-item dropdown-item-danger"
+           maxWidth="Infinity"/>
+</VBox>
+
+</StackPane>

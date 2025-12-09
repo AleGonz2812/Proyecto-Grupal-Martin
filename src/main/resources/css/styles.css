@@ -188,12 +188,10 @@
     -fx-text-fill: #e74c3c;
     -fx-font-size: 12px;
     -fx-font-weight: bold;
-    -fx-padding: 5;
-    -fx-background-color: #fadbd8;
-    -fx-background-radius: 3;
-    -fx-border-color: #e74c3c;
-    -fx-border-width: 1;
-    -fx-border-radius: 3;
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-min-height: 0;
+    -fx-pref-height: -1;
 }
 
 /* ==================== SEPARADORES ==================== */
@@ -398,6 +396,49 @@
 
 .menu-button:hover {
     -fx-background-color: #ecf0f1;
+}
+
+/* ==================== MENÚ DESPLEGABLE DE PERFIL ==================== */
+
+.perfil-dropdown {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-padding: 5;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0, 0, 3);
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+}
+
+.dropdown-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: #2c3e50;
+    -fx-alignment: CENTER_LEFT;
+    -fx-font-size: 13px;
+    -fx-padding: 10 20 10 20;
+    -fx-cursor: hand;
+    -fx-background-radius: 5;
+    -fx-min-width: 180px;
+}
+
+.dropdown-item:hover {
+    -fx-background-color: #ecf0f1;
+}
+
+.dropdown-item-danger {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e74c3c;
+    -fx-alignment: CENTER_LEFT;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20 10 20;
+    -fx-cursor: hand;
+    -fx-background-radius: 5;
+    -fx-min-width: 180px;
+}
+
+.dropdown-item-danger:hover {
+    -fx-background-color: #fadbd8;
 }
 
 /* Botón de avatar */

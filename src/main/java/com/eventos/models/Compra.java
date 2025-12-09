@@ -149,13 +149,3 @@ public class Compra {
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }
-
-/**
- * Estados posibles de una compra
- */
-enum EstadoCompra {
-    PENDIENTE,
-    COMPLETADA,
-    CANCELADA,
-    REEMBOLSADA
-}

@@ -1,7 +1,6 @@
 package com.eventos.dto.xml;
 
 import jakarta.xml.bind.annotation.*;
-import java.time.LocalDateTime;
 
 /**
  * DTO para exportar/importar Eventos en formato XML

@@ -64,6 +64,9 @@ public class RegistroController {
     
     @FXML
     private Button registrarButton;             // Botón de registro
+    
+    @FXML
+    private CheckBox esAdminCheckBox;           // Checkbox para registrar como admin
 
     // ========== REPOSITORIOS ==========
     private final UsuarioRepository usuarioRepository;
@@ -234,41 +237,45 @@ public class RegistroController {
                 return;
             }
 
-            // Nota: Validación de DNI duplicado deshabilitada (modelo Usuario no tiene campo dni)
-            // Si se añade el campo dni al modelo, descomentar:
-            // if (usuarioRepository.existsByDni(dni)) {
-            //     mostrarError("El DNI ya está registrado");
-            //     return;
-            // }
+            // Validar que el DNI sea único
+            if (usuarioRepository.existsByDni(dni)) {
+                mostrarError("El DNI ya está registrado");
+                return;
+            }
 
-            // Obtener rol de usuario normal (ID 2)
-            Rol rolUsuario = rolRepository.findById(2L)
-                .orElseThrow(() -> new ValidationException("No se encontró el rol de usuario"));
+            // Determinar el rol según el checkbox
+            boolean esAdmin = esAdminCheckBox != null && esAdminCheckBox.isSelected();
+            Long rolId = esAdmin ? 1L : 2L; // 1 = Admin, 2 = Usuario
+            
+            Rol rol = rolRepository.findById(rolId)
+                .orElseThrow(() -> new ValidationException("No se encontró el rol"));
 
             // Crear nuevo usuario
             Usuario nuevoUsuario = new Usuario();
             nuevoUsuario.setNombre(nombre);
             nuevoUsuario.setEmail(email);
             nuevoUsuario.setTelefono(telefono);
-            // Nota: DNI se valida pero el modelo Usuario actual no tiene campo dni
             nuevoUsuario.setPassword(PasswordUtil.hashPassword(password));
-            nuevoUsuario.setRol(rolUsuario);
+            nuevoUsuario.setRol(rol);
             nuevoUsuario.setActivo(true);
             nuevoUsuario.setFechaAlta(LocalDateTime.now());
+            nuevoUsuario.setDni(dni);
 
             // Guardar en base de datos
-            Usuario usuarioGuardado = usuarioRepository.save(nuevoUsuario);
+            usuarioRepository.save(nuevoUsuario);
 
-            // Hacer login automático
-            Usuario usuarioLogueado = autenticacionService.login(email, password);
-
-            if (usuarioLogueado != null) {
-                // Cargar dashboard
-                cargarDashboard();
-            } else {
-                mostrarError("Usuario registrado. Por favor, inicia sesión.");
-                handleVolverLogin();
-            }
+            // Mostrar mensaje de éxito y redirigir al login
+            mostrarExito("Cuenta creada exitosamente. Por favor, inicia sesión.");
+            
+            // Esperar un momento antes de redirigir
+            Platform.runLater(() -> {
+                try {
+                    Thread.sleep(1500);
+                    handleVolverLogin();
+                } catch (InterruptedException e) {
+                    handleVolverLogin();
+                }
+            });
 
         } catch (ValidationException e) {
             mostrarError(e.getMessage());
@@ -354,7 +361,9 @@ public class RegistroController {
             Scene scene = new Scene(eventosRoot);
             stage.setScene(scene);
             stage.setTitle("Sistema de Gestión de Eventos");
-            stage.setMaximized(true);
+            stage.setWidth(1280);
+            stage.setHeight(800);
+            stage.centerOnScreen();
             stage.show();
 
         } catch (IOException e) {
@@ -401,6 +410,16 @@ public class RegistroController {
      */
     private void mostrarError(String mensaje) {
         errorLabel.setText(mensaje);
+        errorLabel.setStyle("-fx-text-fill: #e74c3c;");
+        errorLabel.setVisible(true);
+    }
+    
+    /**
+     * Muestra un mensaje de éxito en la etiqueta correspondiente.
+     */
+    private void mostrarExito(String mensaje) {
+        errorLabel.setText(mensaje);
+        errorLabel.setStyle("-fx-text-fill: #2ecc71;");
         errorLabel.setVisible(true);
     }
 }

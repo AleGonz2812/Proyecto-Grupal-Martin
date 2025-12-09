@@ -34,6 +34,9 @@ public class Usuario {
     
     @Column(length = 20)
     private String telefono;
+
+    @Column(unique = true, length = 12)
+    private String dni;
     
     @Column(nullable = false)
     private Boolean activo = true;
@@ -121,6 +124,14 @@ public class Usuario {
     
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+
+    public String getDni() {
+        return dni;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
     }
     
     public Boolean getActivo() {

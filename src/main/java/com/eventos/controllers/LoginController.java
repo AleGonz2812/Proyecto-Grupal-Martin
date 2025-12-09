@@ -278,7 +278,9 @@ public class LoginController {
             Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.setScene(scene);
             stage.setTitle(titulo);
-            stage.setMaximized(true); // Maximizar ventana
+            stage.setWidth(1280);
+            stage.setHeight(800);
+            stage.centerOnScreen();
             
             logger.info("Vista de eventos cargada correctamente: {}", vistaFXML);
             
@@ -333,6 +335,7 @@ public class LoginController {
      * Limpia todos los campos del formulario
      * Útil si se quiere resetear el formulario
      */
+    @SuppressWarnings("unused")
     private void limpiarFormulario() {
         emailField.clear();
         passwordField.clear();
