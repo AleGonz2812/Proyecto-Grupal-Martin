@@ -2057,3 +2057,780 @@ Caused by: java.lang.IllegalArgumentException: scale has no meaning for floating
 2025-12-09 09:01:06 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
 2025-12-09 09:01:06 [JavaFX Application Thread] INFO  com.eventos.Main -   Aplicación cerrada correctamente
 2025-12-09 09:01:06 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 15:30:38 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 15:30:38 [main] INFO  com.eventos.Main -   Sistema de Gestión de Eventos v1.0.0
+2025-12-09 15:30:38 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 15:30:38 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando aplicación...
+2025-12-09 15:30:38 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando conexión a base de datos...
+2025-12-09 15:30:38 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - Inicializando EntityManagerFactory...
+2025-12-09 15:30:39 [JavaFX-Launcher] ERROR com.eventos.config.HibernateUtil - Error al inicializar EntityManagerFactory
+org.hibernate.service.spi.ServiceException: Unable to create requested service [org.hibernate.engine.jdbc.env.spi.JdbcEnvironment] due to: Error calling Driver#connect [null]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:276) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:238) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:215) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.model.relational.Database.<init>(Database.java:45) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.getDatabase(InFlightMetadataCollectorImpl.java:223) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.<init>(InFlightMetadataCollectorImpl.java:191) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:169) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:1432) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1503) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.jpa.HibernatePersistenceProvider.createEntityManagerFactory(HibernatePersistenceProvider.java:55) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at jakarta.persistence.Persistence.createEntityManagerFactory(Persistence.java:80) ~[jakarta.persistence-api-3.1.0.jar:3.1.0]
+	at jakarta.persistence.Persistence.createEntityManagerFactory(Persistence.java:55) ~[jakarta.persistence-api-3.1.0.jar:3.1.0]
+	at com.eventos.config.HibernateUtil.getEntityManagerFactory(HibernateUtil.java:28) ~[classes/:?]
+	at com.eventos.Main.init(Main.java:65) ~[classes/:?]
+	at javafx.graphics/com.sun.javafx.application.LauncherImpl.launchApplication1(LauncherImpl.java:825) ~[javafx-graphics-17.0.8-win.jar:?]
+	at javafx.graphics/com.sun.javafx.application.LauncherImpl.lambda$launchApplication$2(LauncherImpl.java:196) ~[javafx-graphics-17.0.8-win.jar:?]
+	at java.base/java.lang.Thread.run(Thread.java:1583) [?:?]
+Caused by: org.hibernate.exception.JDBCConnectionException: Error calling Driver#connect [null]
+	at org.hibernate.exception.internal.SQLStateConversionDelegate.convert(SQLStateConversionDelegate.java:100) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.BasicConnectionCreator$1.convert(BasicConnectionCreator.java:118) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.BasicConnectionCreator.convertSqlException(BasicConnectionCreator.java:143) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverConnectionCreator.makeConnection(DriverConnectionCreator.java:43) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.BasicConnectionCreator.createConnection(BasicConnectionCreator.java:61) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections.addConnections(DriverManagerConnectionProviderImpl.java:494) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections.<init>(DriverManagerConnectionProviderImpl.java:367) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections$Builder.build(DriverManagerConnectionProviderImpl.java:545) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl.buildPool(DriverManagerConnectionProviderImpl.java:101) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl.configure(DriverManagerConnectionProviderImpl.java:81) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.configureService(StandardServiceRegistryImpl.java:135) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:247) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:215) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.buildJdbcConnectionAccess(JdbcEnvironmentInitiator.java:391) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.getJdbcEnvironmentUsingJdbcMetadata(JdbcEnvironmentInitiator.java:259) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:105) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:66) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:129) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:263) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	... 16 more
+Caused by: com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at org.hibernate.engine.jdbc.connections.internal.DriverConnectionCreator.makeConnection(DriverConnectionCreator.java:40) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.BasicConnectionCreator.createConnection(BasicConnectionCreator.java:61) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections.addConnections(DriverManagerConnectionProviderImpl.java:494) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections.<init>(DriverManagerConnectionProviderImpl.java:367) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections$Builder.build(DriverManagerConnectionProviderImpl.java:545) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl.buildPool(DriverManagerConnectionProviderImpl.java:101) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl.configure(DriverManagerConnectionProviderImpl.java:81) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.configureService(StandardServiceRegistryImpl.java:135) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:247) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:215) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.buildJdbcConnectionAccess(JdbcEnvironmentInitiator.java:391) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.getJdbcEnvironmentUsingJdbcMetadata(JdbcEnvironmentInitiator.java:259) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:105) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:66) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:129) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:263) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	... 16 more
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62) ~[?:?]
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502) ~[?:?]
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486) ~[?:?]
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at org.hibernate.engine.jdbc.connections.internal.DriverConnectionCreator.makeConnection(DriverConnectionCreator.java:40) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.BasicConnectionCreator.createConnection(BasicConnectionCreator.java:61) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections.addConnections(DriverManagerConnectionProviderImpl.java:494) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections.<init>(DriverManagerConnectionProviderImpl.java:367) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections$Builder.build(DriverManagerConnectionProviderImpl.java:545) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl.buildPool(DriverManagerConnectionProviderImpl.java:101) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl.configure(DriverManagerConnectionProviderImpl.java:81) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.configureService(StandardServiceRegistryImpl.java:135) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:247) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:215) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.buildJdbcConnectionAccess(JdbcEnvironmentInitiator.java:391) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.getJdbcEnvironmentUsingJdbcMetadata(JdbcEnvironmentInitiator.java:259) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:105) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:66) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:129) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:263) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	... 16 more
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method) ~[?:?]
+	at java.base/sun.nio.ch.Net.connect(Net.java:597) ~[?:?]
+	at java.base/sun.nio.ch.Net.connect(Net.java:586) ~[?:?]
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:583) ~[?:?]
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[?:?]
+	at java.base/java.net.Socket.connect(Socket.java:751) ~[?:?]
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at org.hibernate.engine.jdbc.connections.internal.DriverConnectionCreator.makeConnection(DriverConnectionCreator.java:40) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.BasicConnectionCreator.createConnection(BasicConnectionCreator.java:61) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections.addConnections(DriverManagerConnectionProviderImpl.java:494) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections.<init>(DriverManagerConnectionProviderImpl.java:367) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections$Builder.build(DriverManagerConnectionProviderImpl.java:545) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl.buildPool(DriverManagerConnectionProviderImpl.java:101) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl.configure(DriverManagerConnectionProviderImpl.java:81) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.configureService(StandardServiceRegistryImpl.java:135) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:247) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:215) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.buildJdbcConnectionAccess(JdbcEnvironmentInitiator.java:391) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.getJdbcEnvironmentUsingJdbcMetadata(JdbcEnvironmentInitiator.java:259) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:105) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:66) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:129) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:263) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	... 16 more
+2025-12-09 15:30:39 [JavaFX-Launcher] ERROR com.eventos.Main - ✗ Error al inicializar la base de datos
+java.lang.RuntimeException: No se pudo crear EntityManagerFactory
+	at com.eventos.config.HibernateUtil.getEntityManagerFactory(HibernateUtil.java:32) ~[classes/:?]
+	at com.eventos.Main.init(Main.java:65) ~[classes/:?]
+	at javafx.graphics/com.sun.javafx.application.LauncherImpl.launchApplication1(LauncherImpl.java:825) ~[javafx-graphics-17.0.8-win.jar:?]
+	at javafx.graphics/com.sun.javafx.application.LauncherImpl.lambda$launchApplication$2(LauncherImpl.java:196) ~[javafx-graphics-17.0.8-win.jar:?]
+	at java.base/java.lang.Thread.run(Thread.java:1583) [?:?]
+Caused by: org.hibernate.service.spi.ServiceException: Unable to create requested service [org.hibernate.engine.jdbc.env.spi.JdbcEnvironment] due to: Error calling Driver#connect [null]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:276) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:238) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:215) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.model.relational.Database.<init>(Database.java:45) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.getDatabase(InFlightMetadataCollectorImpl.java:223) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.<init>(InFlightMetadataCollectorImpl.java:191) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:169) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:1432) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1503) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.jpa.HibernatePersistenceProvider.createEntityManagerFactory(HibernatePersistenceProvider.java:55) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at jakarta.persistence.Persistence.createEntityManagerFactory(Persistence.java:80) ~[jakarta.persistence-api-3.1.0.jar:3.1.0]
+	at jakarta.persistence.Persistence.createEntityManagerFactory(Persistence.java:55) ~[jakarta.persistence-api-3.1.0.jar:3.1.0]
+	at com.eventos.config.HibernateUtil.getEntityManagerFactory(HibernateUtil.java:28) ~[classes/:?]
+	... 4 more
+Caused by: org.hibernate.exception.JDBCConnectionException: Error calling Driver#connect [null]
+	at org.hibernate.exception.internal.SQLStateConversionDelegate.convert(SQLStateConversionDelegate.java:100) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.BasicConnectionCreator$1.convert(BasicConnectionCreator.java:118) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.BasicConnectionCreator.convertSqlException(BasicConnectionCreator.java:143) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverConnectionCreator.makeConnection(DriverConnectionCreator.java:43) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.BasicConnectionCreator.createConnection(BasicConnectionCreator.java:61) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections.addConnections(DriverManagerConnectionProviderImpl.java:494) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections.<init>(DriverManagerConnectionProviderImpl.java:367) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections$Builder.build(DriverManagerConnectionProviderImpl.java:545) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl.buildPool(DriverManagerConnectionProviderImpl.java:101) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl.configure(DriverManagerConnectionProviderImpl.java:81) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.configureService(StandardServiceRegistryImpl.java:135) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:247) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:215) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.buildJdbcConnectionAccess(JdbcEnvironmentInitiator.java:391) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.getJdbcEnvironmentUsingJdbcMetadata(JdbcEnvironmentInitiator.java:259) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:105) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:66) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:129) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:263) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:238) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:215) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.model.relational.Database.<init>(Database.java:45) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.getDatabase(InFlightMetadataCollectorImpl.java:223) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.<init>(InFlightMetadataCollectorImpl.java:191) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:169) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:1432) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1503) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.jpa.HibernatePersistenceProvider.createEntityManagerFactory(HibernatePersistenceProvider.java:55) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at jakarta.persistence.Persistence.createEntityManagerFactory(Persistence.java:80) ~[jakarta.persistence-api-3.1.0.jar:3.1.0]
+	at jakarta.persistence.Persistence.createEntityManagerFactory(Persistence.java:55) ~[jakarta.persistence-api-3.1.0.jar:3.1.0]
+	at com.eventos.config.HibernateUtil.getEntityManagerFactory(HibernateUtil.java:28) ~[classes/:?]
+	... 4 more
+Caused by: com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at org.hibernate.engine.jdbc.connections.internal.DriverConnectionCreator.makeConnection(DriverConnectionCreator.java:40) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.BasicConnectionCreator.createConnection(BasicConnectionCreator.java:61) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections.addConnections(DriverManagerConnectionProviderImpl.java:494) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections.<init>(DriverManagerConnectionProviderImpl.java:367) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections$Builder.build(DriverManagerConnectionProviderImpl.java:545) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl.buildPool(DriverManagerConnectionProviderImpl.java:101) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl.configure(DriverManagerConnectionProviderImpl.java:81) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.configureService(StandardServiceRegistryImpl.java:135) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:247) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:215) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.buildJdbcConnectionAccess(JdbcEnvironmentInitiator.java:391) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.getJdbcEnvironmentUsingJdbcMetadata(JdbcEnvironmentInitiator.java:259) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:105) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:66) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:129) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:263) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:238) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:215) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.model.relational.Database.<init>(Database.java:45) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.getDatabase(InFlightMetadataCollectorImpl.java:223) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.<init>(InFlightMetadataCollectorImpl.java:191) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:169) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:1432) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1503) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.jpa.HibernatePersistenceProvider.createEntityManagerFactory(HibernatePersistenceProvider.java:55) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at jakarta.persistence.Persistence.createEntityManagerFactory(Persistence.java:80) ~[jakarta.persistence-api-3.1.0.jar:3.1.0]
+	at jakarta.persistence.Persistence.createEntityManagerFactory(Persistence.java:55) ~[jakarta.persistence-api-3.1.0.jar:3.1.0]
+	at com.eventos.config.HibernateUtil.getEntityManagerFactory(HibernateUtil.java:28) ~[classes/:?]
+	... 4 more
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62) ~[?:?]
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502) ~[?:?]
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486) ~[?:?]
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at org.hibernate.engine.jdbc.connections.internal.DriverConnectionCreator.makeConnection(DriverConnectionCreator.java:40) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.BasicConnectionCreator.createConnection(BasicConnectionCreator.java:61) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections.addConnections(DriverManagerConnectionProviderImpl.java:494) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections.<init>(DriverManagerConnectionProviderImpl.java:367) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections$Builder.build(DriverManagerConnectionProviderImpl.java:545) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl.buildPool(DriverManagerConnectionProviderImpl.java:101) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl.configure(DriverManagerConnectionProviderImpl.java:81) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.configureService(StandardServiceRegistryImpl.java:135) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:247) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:215) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.buildJdbcConnectionAccess(JdbcEnvironmentInitiator.java:391) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.getJdbcEnvironmentUsingJdbcMetadata(JdbcEnvironmentInitiator.java:259) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:105) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:66) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:129) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:263) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:238) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:215) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.model.relational.Database.<init>(Database.java:45) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.getDatabase(InFlightMetadataCollectorImpl.java:223) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.<init>(InFlightMetadataCollectorImpl.java:191) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:169) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:1432) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1503) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.jpa.HibernatePersistenceProvider.createEntityManagerFactory(HibernatePersistenceProvider.java:55) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at jakarta.persistence.Persistence.createEntityManagerFactory(Persistence.java:80) ~[jakarta.persistence-api-3.1.0.jar:3.1.0]
+	at jakarta.persistence.Persistence.createEntityManagerFactory(Persistence.java:55) ~[jakarta.persistence-api-3.1.0.jar:3.1.0]
+	at com.eventos.config.HibernateUtil.getEntityManagerFactory(HibernateUtil.java:28) ~[classes/:?]
+	... 4 more
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method) ~[?:?]
+	at java.base/sun.nio.ch.Net.connect(Net.java:597) ~[?:?]
+	at java.base/sun.nio.ch.Net.connect(Net.java:586) ~[?:?]
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:583) ~[?:?]
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[?:?]
+	at java.base/java.net.Socket.connect(Socket.java:751) ~[?:?]
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189) ~[mysql-connector-j-8.2.0.jar:8.2.0]
+	at org.hibernate.engine.jdbc.connections.internal.DriverConnectionCreator.makeConnection(DriverConnectionCreator.java:40) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.BasicConnectionCreator.createConnection(BasicConnectionCreator.java:61) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections.addConnections(DriverManagerConnectionProviderImpl.java:494) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections.<init>(DriverManagerConnectionProviderImpl.java:367) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections$Builder.build(DriverManagerConnectionProviderImpl.java:545) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl.buildPool(DriverManagerConnectionProviderImpl.java:101) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl.configure(DriverManagerConnectionProviderImpl.java:81) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.configureService(StandardServiceRegistryImpl.java:135) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:247) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:215) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.buildJdbcConnectionAccess(JdbcEnvironmentInitiator.java:391) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.getJdbcEnvironmentUsingJdbcMetadata(JdbcEnvironmentInitiator.java:259) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:105) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:66) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:129) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:263) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:238) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:215) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.model.relational.Database.<init>(Database.java:45) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.getDatabase(InFlightMetadataCollectorImpl.java:223) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.<init>(InFlightMetadataCollectorImpl.java:191) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:169) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:1432) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1503) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at org.hibernate.jpa.HibernatePersistenceProvider.createEntityManagerFactory(HibernatePersistenceProvider.java:55) ~[hibernate-core-6.3.1.Final.jar:6.3.1.Final]
+	at jakarta.persistence.Persistence.createEntityManagerFactory(Persistence.java:80) ~[jakarta.persistence-api-3.1.0.jar:3.1.0]
+	at jakarta.persistence.Persistence.createEntityManagerFactory(Persistence.java:55) ~[jakarta.persistence-api-3.1.0.jar:3.1.0]
+	at com.eventos.config.HibernateUtil.getEntityManagerFactory(HibernateUtil.java:28) ~[classes/:?]
+	... 4 more
+2025-12-09 15:32:06 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 15:32:06 [main] INFO  com.eventos.Main -   Sistema de Gestión de Eventos v1.0.0
+2025-12-09 15:32:06 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 15:32:06 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando aplicación...
+2025-12-09 15:32:06 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando conexión a base de datos...
+2025-12-09 15:32:06 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - Inicializando EntityManagerFactory...
+2025-12-09 15:32:09 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory inicializado correctamente
+2025-12-09 15:32:09 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Conexión a base de datos establecida correctamente
+2025-12-09 15:32:09 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Aplicación inicializada correctamente
+2025-12-09 15:32:09 [JavaFX Application Thread] INFO  com.eventos.Main - Iniciando interfaz gráfica...
+2025-12-09 15:32:10 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 15:32:10 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Estilos CSS cargados
+2025-12-09 15:32:12 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Interfaz gráfica cargada correctamente
+2025-12-09 15:32:12 [JavaFX Application Thread] INFO  com.eventos.Main - Sistema listo para usar
+2025-12-09 15:32:21 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 15:32:21 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: admin@eventos.com
+2025-12-09 15:32:23 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: admin@eventos.com - Rol: ADMIN
+2025-12-09 15:32:23 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: admin@eventos.com - Rol: ADMIN
+2025-12-09 15:32:23 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: ADMIN
+2025-12-09 15:32:24 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 15:32:25 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_admin.fxml
+2025-12-09 15:33:18 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Cerrando sesión del usuario: admin@eventos.com
+2025-12-09 15:33:18 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 15:33:42 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 15:33:42 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: fran@gmail.com
+2025-12-09 15:33:43 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: fran@gmail.com - Rol: USUARIO
+2025-12-09 15:33:43 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: fran@gmail.com - Rol: USUARIO
+2025-12-09 15:33:43 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: USUARIO
+2025-12-09 15:33:43 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 15:33:43 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_usuario.fxml
+2025-12-09 15:34:45 [JavaFX Application Thread] INFO  com.eventos.Main - Cerrando aplicación...
+2025-12-09 15:34:45 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - Cerrando EntityManagerFactory...
+2025-12-09 15:34:45 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory cerrado
+2025-12-09 15:34:45 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Conexión a base de datos cerrada correctamente
+2025-12-09 15:34:45 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 15:34:45 [JavaFX Application Thread] INFO  com.eventos.Main -   Aplicación cerrada correctamente
+2025-12-09 15:34:45 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 15:35:06 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 15:35:06 [main] INFO  com.eventos.Main -   Sistema de Gestión de Eventos v1.0.0
+2025-12-09 15:35:06 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 15:35:06 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando aplicación...
+2025-12-09 15:35:06 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando conexión a base de datos...
+2025-12-09 15:35:06 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - Inicializando EntityManagerFactory...
+2025-12-09 15:35:10 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory inicializado correctamente
+2025-12-09 15:35:10 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Conexión a base de datos establecida correctamente
+2025-12-09 15:35:10 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Aplicación inicializada correctamente
+2025-12-09 15:35:10 [JavaFX Application Thread] INFO  com.eventos.Main - Iniciando interfaz gráfica...
+2025-12-09 15:35:10 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 15:35:10 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Estilos CSS cargados
+2025-12-09 15:35:12 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Interfaz gráfica cargada correctamente
+2025-12-09 15:35:12 [JavaFX Application Thread] INFO  com.eventos.Main - Sistema listo para usar
+2025-12-09 15:35:28 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 15:35:28 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: admin@eventos.com
+2025-12-09 15:35:29 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: admin@eventos.com - Rol: ADMIN
+2025-12-09 15:35:29 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: admin@eventos.com - Rol: ADMIN
+2025-12-09 15:35:29 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: ADMIN
+2025-12-09 15:35:31 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 15:35:31 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_admin.fxml
+2025-12-09 15:35:35 [JavaFX Application Thread] INFO  com.eventos.Main - Cerrando aplicación...
+2025-12-09 15:35:35 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - Cerrando EntityManagerFactory...
+2025-12-09 15:35:35 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory cerrado
+2025-12-09 15:35:35 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Conexión a base de datos cerrada correctamente
+2025-12-09 15:35:35 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 15:35:35 [JavaFX Application Thread] INFO  com.eventos.Main -   Aplicación cerrada correctamente
+2025-12-09 15:35:35 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 15:36:55 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 15:36:55 [main] INFO  com.eventos.Main -   Sistema de Gestión de Eventos v1.0.0
+2025-12-09 15:36:55 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 15:36:55 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando aplicación...
+2025-12-09 15:36:55 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando conexión a base de datos...
+2025-12-09 15:36:55 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - Inicializando EntityManagerFactory...
+2025-12-09 15:36:59 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory inicializado correctamente
+2025-12-09 15:36:59 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Conexión a base de datos establecida correctamente
+2025-12-09 15:36:59 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Aplicación inicializada correctamente
+2025-12-09 15:36:59 [JavaFX Application Thread] INFO  com.eventos.Main - Iniciando interfaz gráfica...
+2025-12-09 15:37:00 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 15:37:00 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Estilos CSS cargados
+2025-12-09 15:37:00 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Interfaz gráfica cargada correctamente
+2025-12-09 15:37:00 [JavaFX Application Thread] INFO  com.eventos.Main - Sistema listo para usar
+2025-12-09 15:37:25 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 15:37:25 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: admin@eventos.com
+2025-12-09 15:37:26 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: admin@eventos.com - Rol: ADMIN
+2025-12-09 15:37:26 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: admin@eventos.com - Rol: ADMIN
+2025-12-09 15:37:26 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: ADMIN
+2025-12-09 15:37:27 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 15:37:28 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_admin.fxml
+2025-12-09 15:41:24 [JavaFX Application Thread] INFO  com.eventos.Main - Cerrando aplicación...
+2025-12-09 15:41:24 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - Cerrando EntityManagerFactory...
+2025-12-09 15:41:24 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory cerrado
+2025-12-09 15:41:24 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Conexión a base de datos cerrada correctamente
+2025-12-09 15:41:24 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 15:41:24 [JavaFX Application Thread] INFO  com.eventos.Main -   Aplicación cerrada correctamente
+2025-12-09 15:41:24 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 15:50:44 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 15:50:44 [main] INFO  com.eventos.Main -   Sistema de Gestión de Eventos v1.0.0
+2025-12-09 15:50:44 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 15:50:44 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando aplicación...
+2025-12-09 15:50:44 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando conexión a base de datos...
+2025-12-09 15:50:44 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - Inicializando EntityManagerFactory...
+2025-12-09 15:50:47 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory inicializado correctamente
+2025-12-09 15:50:47 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Conexión a base de datos establecida correctamente
+2025-12-09 15:50:47 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Aplicación inicializada correctamente
+2025-12-09 15:50:48 [JavaFX Application Thread] INFO  com.eventos.Main - Iniciando interfaz gráfica...
+2025-12-09 15:50:48 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 15:50:48 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Estilos CSS cargados
+2025-12-09 15:50:49 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Interfaz gráfica cargada correctamente
+2025-12-09 15:50:49 [JavaFX Application Thread] INFO  com.eventos.Main - Sistema listo para usar
+2025-12-09 15:51:10 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 15:51:10 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: admin@eventos.com
+2025-12-09 15:51:12 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: admin@eventos.com - Rol: ADMIN
+2025-12-09 15:51:12 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: admin@eventos.com - Rol: ADMIN
+2025-12-09 15:51:12 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: ADMIN
+2025-12-09 15:51:13 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 15:51:13 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_admin.fxml
+2025-12-09 15:53:49 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - 🔄 Recargando escena: /fxml/eventos_admin.fxml
+2025-12-09 15:53:49 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 15:53:49 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ CSS recargado: /css/styles.css
+2025-12-09 15:53:49 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Escena recargada exitosamente
+2025-12-09 15:53:52 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Cerrando sesión del usuario: admin@eventos.com
+2025-12-09 15:53:52 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 15:54:04 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 15:54:04 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: admin@eventos.com
+2025-12-09 15:54:05 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: admin@eventos.com - Rol: ADMIN
+2025-12-09 15:54:05 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: admin@eventos.com - Rol: ADMIN
+2025-12-09 15:54:05 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: ADMIN
+2025-12-09 15:54:05 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 15:54:05 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_admin.fxml
+2025-12-09 15:55:06 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Cerrando sesión del usuario: admin@eventos.com
+2025-12-09 15:55:06 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 15:55:17 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 15:55:17 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: fran@gmail.com
+2025-12-09 15:55:17 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: fran@gmail.com - Rol: USUARIO
+2025-12-09 15:55:17 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: fran@gmail.com - Rol: USUARIO
+2025-12-09 15:55:17 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: USUARIO
+2025-12-09 15:55:17 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 15:55:17 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_usuario.fxml
+2025-12-09 15:55:55 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Logout del usuario: fran@gmail.com
+2025-12-09 15:55:55 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 15:55:58 [JavaFX Application Thread] INFO  com.eventos.Main - Cerrando aplicación...
+2025-12-09 15:55:58 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - Cerrando EntityManagerFactory...
+2025-12-09 15:55:58 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory cerrado
+2025-12-09 15:55:58 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Conexión a base de datos cerrada correctamente
+2025-12-09 15:55:58 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 15:55:58 [JavaFX Application Thread] INFO  com.eventos.Main -   Aplicación cerrada correctamente
+2025-12-09 15:55:58 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 15:57:19 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 15:57:19 [main] INFO  com.eventos.Main -   Sistema de Gestión de Eventos v1.0.0
+2025-12-09 15:57:19 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 15:57:19 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando aplicación...
+2025-12-09 15:57:19 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando conexión a base de datos...
+2025-12-09 15:57:19 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - Inicializando EntityManagerFactory...
+2025-12-09 15:57:22 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory inicializado correctamente
+2025-12-09 15:57:22 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Conexión a base de datos establecida correctamente
+2025-12-09 15:57:22 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Aplicación inicializada correctamente
+2025-12-09 15:57:22 [JavaFX Application Thread] INFO  com.eventos.Main - Iniciando interfaz gráfica...
+2025-12-09 15:57:23 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 15:57:23 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Estilos CSS cargados
+2025-12-09 15:57:23 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Interfaz gráfica cargada correctamente
+2025-12-09 15:57:23 [JavaFX Application Thread] INFO  com.eventos.Main - Sistema listo para usar
+2025-12-09 15:57:41 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 15:57:41 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: admin@eventos.com
+2025-12-09 15:57:43 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: admin@eventos.com - Rol: ADMIN
+2025-12-09 15:57:43 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: admin@eventos.com - Rol: ADMIN
+2025-12-09 15:57:43 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: ADMIN
+2025-12-09 15:57:44 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 15:57:44 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_admin.fxml
+2025-12-09 15:57:56 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Cerrando sesión del usuario: admin@eventos.com
+2025-12-09 15:57:56 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 15:58:17 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 15:58:17 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: fran@gmail.com
+2025-12-09 15:58:18 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: fran@gmail.com - Rol: USUARIO
+2025-12-09 15:58:18 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: fran@gmail.com - Rol: USUARIO
+2025-12-09 15:58:18 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: USUARIO
+2025-12-09 15:58:18 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 15:58:18 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_usuario.fxml
+2025-12-09 15:58:37 [JavaFX Application Thread] INFO  com.eventos.Main - Cerrando aplicación...
+2025-12-09 15:58:37 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - Cerrando EntityManagerFactory...
+2025-12-09 15:58:37 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory cerrado
+2025-12-09 15:58:37 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Conexión a base de datos cerrada correctamente
+2025-12-09 15:58:37 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 15:58:37 [JavaFX Application Thread] INFO  com.eventos.Main -   Aplicación cerrada correctamente
+2025-12-09 15:58:37 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 15:59:01 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 15:59:01 [main] INFO  com.eventos.Main -   Sistema de Gestión de Eventos v1.0.0
+2025-12-09 15:59:01 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 15:59:01 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando aplicación...
+2025-12-09 15:59:01 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando conexión a base de datos...
+2025-12-09 15:59:01 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - Inicializando EntityManagerFactory...
+2025-12-09 15:59:05 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory inicializado correctamente
+2025-12-09 15:59:05 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Conexión a base de datos establecida correctamente
+2025-12-09 15:59:05 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Aplicación inicializada correctamente
+2025-12-09 15:59:05 [JavaFX Application Thread] INFO  com.eventos.Main - Iniciando interfaz gráfica...
+2025-12-09 15:59:05 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 15:59:05 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Estilos CSS cargados
+2025-12-09 15:59:06 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Interfaz gráfica cargada correctamente
+2025-12-09 15:59:06 [JavaFX Application Thread] INFO  com.eventos.Main - Sistema listo para usar
+2025-12-09 15:59:43 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 15:59:43 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: admin@eventos.com
+2025-12-09 15:59:44 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: admin@eventos.com - Rol: ADMIN
+2025-12-09 15:59:44 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: admin@eventos.com - Rol: ADMIN
+2025-12-09 15:59:44 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: ADMIN
+2025-12-09 15:59:46 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 15:59:46 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_admin.fxml
+2025-12-09 15:59:50 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Cerrando sesión del usuario: admin@eventos.com
+2025-12-09 15:59:50 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 15:59:58 [JavaFX Application Thread] INFO  com.eventos.Main - Cerrando aplicación...
+2025-12-09 15:59:58 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - Cerrando EntityManagerFactory...
+2025-12-09 15:59:58 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory cerrado
+2025-12-09 15:59:58 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Conexión a base de datos cerrada correctamente
+2025-12-09 15:59:58 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 15:59:58 [JavaFX Application Thread] INFO  com.eventos.Main -   Aplicación cerrada correctamente
+2025-12-09 15:59:58 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 16:09:31 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 16:09:31 [main] INFO  com.eventos.Main -   Sistema de Gestión de Eventos v1.0.0
+2025-12-09 16:09:31 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 16:09:31 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando aplicación...
+2025-12-09 16:09:31 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando conexión a base de datos...
+2025-12-09 16:09:31 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - Inicializando EntityManagerFactory...
+2025-12-09 16:09:35 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory inicializado correctamente
+2025-12-09 16:09:35 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Conexión a base de datos establecida correctamente
+2025-12-09 16:09:35 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Aplicación inicializada correctamente
+2025-12-09 16:09:35 [JavaFX Application Thread] INFO  com.eventos.Main - Iniciando interfaz gráfica...
+2025-12-09 16:09:35 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 16:09:35 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Estilos CSS cargados
+2025-12-09 16:09:35 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Interfaz gráfica cargada correctamente
+2025-12-09 16:09:35 [JavaFX Application Thread] INFO  com.eventos.Main - Sistema listo para usar
+2025-12-09 16:10:03 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 16:10:03 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: admin@eventos.com
+2025-12-09 16:10:04 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: admin@eventos.com - Rol: ADMIN
+2025-12-09 16:10:04 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: admin@eventos.com - Rol: ADMIN
+2025-12-09 16:10:04 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: ADMIN
+2025-12-09 16:10:06 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 16:10:06 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_admin.fxml
+2025-12-09 16:10:23 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Cerrando sesión del usuario: admin@eventos.com
+2025-12-09 16:10:23 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 16:10:33 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 16:10:33 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: fran@gmail.com
+2025-12-09 16:10:34 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: fran@gmail.com - Rol: USUARIO
+2025-12-09 16:10:34 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: fran@gmail.com - Rol: USUARIO
+2025-12-09 16:10:34 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: USUARIO
+2025-12-09 16:10:34 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 16:10:34 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_usuario.fxml
+2025-12-09 16:11:42 [JavaFX Application Thread] INFO  com.eventos.Main - Cerrando aplicación...
+2025-12-09 16:11:42 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - Cerrando EntityManagerFactory...
+2025-12-09 16:11:42 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory cerrado
+2025-12-09 16:11:42 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Conexión a base de datos cerrada correctamente
+2025-12-09 16:11:42 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 16:11:42 [JavaFX Application Thread] INFO  com.eventos.Main -   Aplicación cerrada correctamente
+2025-12-09 16:11:42 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 16:20:26 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 16:20:26 [main] INFO  com.eventos.Main -   Sistema de Gestión de Eventos v1.0.0
+2025-12-09 16:20:26 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 16:20:26 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando aplicación...
+2025-12-09 16:20:26 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando conexión a base de datos...
+2025-12-09 16:20:26 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - Inicializando EntityManagerFactory...
+2025-12-09 16:20:29 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory inicializado correctamente
+2025-12-09 16:20:29 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Conexión a base de datos establecida correctamente
+2025-12-09 16:20:29 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Aplicación inicializada correctamente
+2025-12-09 16:20:29 [JavaFX Application Thread] INFO  com.eventos.Main - Iniciando interfaz gráfica...
+2025-12-09 16:20:30 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 16:20:30 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Estilos CSS cargados
+2025-12-09 16:20:30 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Interfaz gráfica cargada correctamente
+2025-12-09 16:20:30 [JavaFX Application Thread] INFO  com.eventos.Main - Sistema listo para usar
+2025-12-09 16:20:39 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 16:20:39 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: admin@eventos.com
+2025-12-09 16:20:40 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: admin@eventos.com - Rol: ADMIN
+2025-12-09 16:20:40 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: admin@eventos.com - Rol: ADMIN
+2025-12-09 16:20:40 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: ADMIN
+2025-12-09 16:20:42 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 16:20:42 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_admin.fxml
+2025-12-09 16:22:52 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - 🔄 Recargando escena: /fxml/eventos_admin.fxml
+2025-12-09 16:22:52 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 16:22:52 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ CSS recargado: /css/styles.css
+2025-12-09 16:22:52 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Escena recargada exitosamente
+2025-12-09 16:22:54 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Cerrando sesión del usuario: admin@eventos.com
+2025-12-09 16:22:54 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 16:23:01 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 16:23:01 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: fran@gmail.com
+2025-12-09 16:23:02 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: fran@gmail.com - Rol: USUARIO
+2025-12-09 16:23:02 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: fran@gmail.com - Rol: USUARIO
+2025-12-09 16:23:02 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: USUARIO
+2025-12-09 16:23:02 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 16:23:02 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_usuario.fxml
+2025-12-09 16:24:41 [JavaFX Application Thread] INFO  com.eventos.Main - Cerrando aplicación...
+2025-12-09 16:24:41 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - Cerrando EntityManagerFactory...
+2025-12-09 16:24:41 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory cerrado
+2025-12-09 16:24:41 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Conexión a base de datos cerrada correctamente
+2025-12-09 16:24:41 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 16:24:41 [JavaFX Application Thread] INFO  com.eventos.Main -   Aplicación cerrada correctamente
+2025-12-09 16:24:41 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 16:31:59 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 16:31:59 [main] INFO  com.eventos.Main -   Sistema de Gestión de Eventos v1.0.0
+2025-12-09 16:31:59 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 16:31:59 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando aplicación...
+2025-12-09 16:31:59 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando conexión a base de datos...
+2025-12-09 16:31:59 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - Inicializando EntityManagerFactory...
+2025-12-09 16:32:02 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory inicializado correctamente
+2025-12-09 16:32:02 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Conexión a base de datos establecida correctamente
+2025-12-09 16:32:02 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Aplicación inicializada correctamente
+2025-12-09 16:32:02 [JavaFX Application Thread] INFO  com.eventos.Main - Iniciando interfaz gráfica...
+2025-12-09 16:32:03 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 16:32:03 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Estilos CSS cargados
+2025-12-09 16:32:03 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Interfaz gráfica cargada correctamente
+2025-12-09 16:32:03 [JavaFX Application Thread] INFO  com.eventos.Main - Sistema listo para usar
+2025-12-09 16:32:54 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 16:32:54 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: admin@eventos.com
+2025-12-09 16:32:55 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: admin@eventos.com - Rol: ADMIN
+2025-12-09 16:32:55 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: admin@eventos.com - Rol: ADMIN
+2025-12-09 16:32:55 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: ADMIN
+2025-12-09 16:32:57 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 16:32:57 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_admin.fxml
+2025-12-09 16:33:07 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Cerrando sesión del usuario: admin@eventos.com
+2025-12-09 16:33:07 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 16:33:16 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 16:33:16 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: fran@gmail.com
+2025-12-09 16:33:17 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: fran@gmail.com - Rol: USUARIO
+2025-12-09 16:33:17 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: fran@gmail.com - Rol: USUARIO
+2025-12-09 16:33:17 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: USUARIO
+2025-12-09 16:33:17 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 16:33:17 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_usuario.fxml
+2025-12-09 16:34:57 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Logout del usuario: fran@gmail.com
+2025-12-09 16:34:57 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 16:35:01 [JavaFX Application Thread] INFO  com.eventos.Main - Cerrando aplicación...
+2025-12-09 16:35:01 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - Cerrando EntityManagerFactory...
+2025-12-09 16:35:02 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory cerrado
+2025-12-09 16:35:02 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Conexión a base de datos cerrada correctamente
+2025-12-09 16:35:02 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 16:35:02 [JavaFX Application Thread] INFO  com.eventos.Main -   Aplicación cerrada correctamente
+2025-12-09 16:35:02 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 16:37:35 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 16:37:35 [main] INFO  com.eventos.Main -   Sistema de Gestión de Eventos v1.0.0
+2025-12-09 16:37:35 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 16:37:35 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando aplicación...
+2025-12-09 16:37:35 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando conexión a base de datos...
+2025-12-09 16:37:35 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - Inicializando EntityManagerFactory...
+2025-12-09 16:37:39 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory inicializado correctamente
+2025-12-09 16:37:39 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Conexión a base de datos establecida correctamente
+2025-12-09 16:37:39 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Aplicación inicializada correctamente
+2025-12-09 16:37:39 [JavaFX Application Thread] INFO  com.eventos.Main - Iniciando interfaz gráfica...
+2025-12-09 16:37:40 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 16:37:40 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Estilos CSS cargados
+2025-12-09 16:37:40 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Interfaz gráfica cargada correctamente
+2025-12-09 16:37:40 [JavaFX Application Thread] INFO  com.eventos.Main - Sistema listo para usar
+2025-12-09 16:39:01 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 16:39:01 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: fran@gmail.com
+2025-12-09 16:39:02 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: fran@gmail.com - Rol: USUARIO
+2025-12-09 16:39:02 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: fran@gmail.com - Rol: USUARIO
+2025-12-09 16:39:02 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: USUARIO
+2025-12-09 16:39:04 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 16:39:04 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_usuario.fxml
+2025-12-09 16:39:36 [JavaFX Application Thread] INFO  com.eventos.Main - Cerrando aplicación...
+2025-12-09 16:39:36 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - Cerrando EntityManagerFactory...
+2025-12-09 16:39:36 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory cerrado
+2025-12-09 16:39:36 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Conexión a base de datos cerrada correctamente
+2025-12-09 16:39:36 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 16:39:36 [JavaFX Application Thread] INFO  com.eventos.Main -   Aplicación cerrada correctamente
+2025-12-09 16:39:36 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 16:44:09 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 16:44:09 [main] INFO  com.eventos.Main -   Sistema de Gestión de Eventos v1.0.0
+2025-12-09 16:44:09 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 16:44:09 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando aplicación...
+2025-12-09 16:44:09 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando conexión a base de datos...
+2025-12-09 16:44:09 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - Inicializando EntityManagerFactory...
+2025-12-09 16:44:13 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory inicializado correctamente
+2025-12-09 16:44:13 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Conexión a base de datos establecida correctamente
+2025-12-09 16:44:13 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Aplicación inicializada correctamente
+2025-12-09 16:44:13 [JavaFX Application Thread] INFO  com.eventos.Main - Iniciando interfaz gráfica...
+2025-12-09 16:44:13 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 16:44:14 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Estilos CSS cargados
+2025-12-09 16:44:14 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Interfaz gráfica cargada correctamente
+2025-12-09 16:44:14 [JavaFX Application Thread] INFO  com.eventos.Main - Sistema listo para usar
+2025-12-09 16:44:47 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 16:44:47 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: admin@eventos.com
+2025-12-09 16:44:48 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: admin@eventos.com - Rol: ADMIN
+2025-12-09 16:44:48 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: admin@eventos.com - Rol: ADMIN
+2025-12-09 16:44:48 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: ADMIN
+2025-12-09 16:44:49 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 16:44:50 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_admin.fxml
+2025-12-09 16:47:27 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Cerrando sesión del usuario: admin@eventos.com
+2025-12-09 16:47:27 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 16:47:28 [JavaFX Application Thread] INFO  com.eventos.Main - Cerrando aplicación...
+2025-12-09 16:47:28 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - Cerrando EntityManagerFactory...
+2025-12-09 16:47:28 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory cerrado
+2025-12-09 16:47:28 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Conexión a base de datos cerrada correctamente
+2025-12-09 16:47:28 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 16:47:28 [JavaFX Application Thread] INFO  com.eventos.Main -   Aplicación cerrada correctamente
+2025-12-09 16:47:28 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 17:01:00 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 17:01:00 [main] INFO  com.eventos.Main -   Sistema de Gestión de Eventos v1.0.0
+2025-12-09 17:01:00 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 17:01:00 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando aplicación...
+2025-12-09 17:01:00 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando conexión a base de datos...
+2025-12-09 17:01:00 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - Inicializando EntityManagerFactory...
+2025-12-09 17:01:04 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory inicializado correctamente
+2025-12-09 17:01:04 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Conexión a base de datos establecida correctamente
+2025-12-09 17:01:04 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Aplicación inicializada correctamente
+2025-12-09 17:01:04 [JavaFX Application Thread] INFO  com.eventos.Main - Iniciando interfaz gráfica...
+2025-12-09 17:01:04 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 17:01:04 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Estilos CSS cargados
+2025-12-09 17:01:05 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Interfaz gráfica cargada correctamente
+2025-12-09 17:01:05 [JavaFX Application Thread] INFO  com.eventos.Main - Sistema listo para usar
+2025-12-09 17:01:30 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 17:01:30 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: admin@eventos.com
+2025-12-09 17:01:31 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: admin@eventos.com - Rol: ADMIN
+2025-12-09 17:01:31 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: admin@eventos.com - Rol: ADMIN
+2025-12-09 17:01:31 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: ADMIN
+2025-12-09 17:01:32 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 17:01:33 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_admin.fxml
+2025-12-09 17:01:49 [JavaFX Application Thread] INFO  com.eventos.Main - Cerrando aplicación...
+2025-12-09 17:01:49 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - Cerrando EntityManagerFactory...
+2025-12-09 17:01:49 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory cerrado
+2025-12-09 17:01:49 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Conexión a base de datos cerrada correctamente
+2025-12-09 17:01:49 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 17:01:49 [JavaFX Application Thread] INFO  com.eventos.Main -   Aplicación cerrada correctamente
+2025-12-09 17:01:49 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 17:02:25 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 17:02:25 [main] INFO  com.eventos.Main -   Sistema de Gestión de Eventos v1.0.0
+2025-12-09 17:02:25 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 17:02:25 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando aplicación...
+2025-12-09 17:02:25 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando conexión a base de datos...
+2025-12-09 17:02:25 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - Inicializando EntityManagerFactory...
+2025-12-09 17:02:29 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory inicializado correctamente
+2025-12-09 17:02:29 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Conexión a base de datos establecida correctamente
+2025-12-09 17:02:29 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Aplicación inicializada correctamente
+2025-12-09 17:02:29 [JavaFX Application Thread] INFO  com.eventos.Main - Iniciando interfaz gráfica...
+2025-12-09 17:02:29 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 17:02:29 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Estilos CSS cargados
+2025-12-09 17:02:30 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Interfaz gráfica cargada correctamente
+2025-12-09 17:02:30 [JavaFX Application Thread] INFO  com.eventos.Main - Sistema listo para usar
+2025-12-09 17:02:41 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 17:02:41 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: admin@eventos.com
+2025-12-09 17:02:43 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: admin@eventos.com - Rol: ADMIN
+2025-12-09 17:02:43 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: admin@eventos.com - Rol: ADMIN
+2025-12-09 17:02:43 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: ADMIN
+2025-12-09 17:02:44 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 17:02:45 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_admin.fxml
+2025-12-09 17:09:55 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - 🔄 Recargando escena: /fxml/eventos_admin.fxml
+2025-12-09 17:09:55 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 17:09:55 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ CSS recargado: /css/styles.css
+2025-12-09 17:09:55 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Escena recargada exitosamente
+2025-12-09 17:10:02 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Cerrando sesión del usuario: admin@eventos.com
+2025-12-09 17:10:02 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 17:10:17 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 17:10:17 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: fran@gmail.com
+2025-12-09 17:10:17 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: fran@gmail.com - Rol: USUARIO
+2025-12-09 17:10:17 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: fran@gmail.com - Rol: USUARIO
+2025-12-09 17:10:17 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: USUARIO
+2025-12-09 17:10:17 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 17:10:17 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_usuario.fxml
+2025-12-09 17:10:55 [JavaFX Application Thread] INFO  com.eventos.Main - Cerrando aplicación...
+2025-12-09 17:10:55 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - Cerrando EntityManagerFactory...
+2025-12-09 17:10:55 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory cerrado
+2025-12-09 17:10:55 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Conexión a base de datos cerrada correctamente
+2025-12-09 17:10:55 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 17:10:55 [JavaFX Application Thread] INFO  com.eventos.Main -   Aplicación cerrada correctamente
+2025-12-09 17:10:55 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================

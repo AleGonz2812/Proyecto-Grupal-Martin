@@ -93,7 +93,7 @@ public class Main extends Application {
             Parent root = loader.load();
             
             // Crear la escena con el contenido del login
-            Scene scene = new Scene(root, 400, 600);
+            Scene scene = new Scene(root, 600, 500);
             
             // Cargar estilos CSS
             try {
@@ -107,7 +107,7 @@ public class Main extends Application {
             // Configurar la ventana principal
             primaryStage.setTitle("Sistema de Gestión de Eventos - Login");
             primaryStage.setScene(scene);
-            primaryStage.setResizable(false); // Login no redimensionable
+            primaryStage.setResizable(true); // Permitir redimensionar
             primaryStage.centerOnScreen();    // Centrar en pantalla
             
             // Mostrar la ventana

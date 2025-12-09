@@ -118,9 +118,11 @@ public class LoginController {
             Parent registroRoot = loader.load();
 
             Stage stage = (Stage) emailField.getScene().getWindow();
-            Scene scene = new Scene(registroRoot);
+            Scene scene = new Scene(registroRoot, 900, 700);
             stage.setScene(scene);
-            stage.setTitle("Sistema de Gestión de Eventos - Registro");
+            stage.setTitle("Sistema de Gesti\u00f3n de Eventos - Registro");
+            stage.setResizable(true);
+            stage.centerOnScreen();
             stage.show();
 
         } catch (IOException e) {
@@ -278,9 +280,8 @@ public class LoginController {
             Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.setScene(scene);
             stage.setTitle(titulo);
-            stage.setWidth(1280);
-            stage.setHeight(800);
-            stage.centerOnScreen();
+            stage.setResizable(true); // Permitir redimensionar
+            stage.setMaximized(true); // Maximizar ventana
             
             logger.info("Vista de eventos cargada correctamente: {}", vistaFXML);
             

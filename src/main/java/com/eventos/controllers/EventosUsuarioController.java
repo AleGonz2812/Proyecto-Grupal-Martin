@@ -436,7 +436,7 @@ public class EventosUsuarioController {
     }
 
     /**
-     * Busca eventos por texto.
+     * Busca eventos por nombre del evento únicamente.
      */
     private void buscarEventos(String textoBusqueda) {
         if (textoBusqueda == null || textoBusqueda.trim().isEmpty()) {
@@ -444,12 +444,16 @@ public class EventosUsuarioController {
             return;
         }
 
+        String busqueda = textoBusqueda.toLowerCase().trim();
         List<Evento> eventosFiltrados = eventosActuales.stream()
-            .filter(e -> e.getNombre().toLowerCase().contains(textoBusqueda.toLowerCase()) ||
-                        e.getDescripcion().toLowerCase().contains(textoBusqueda.toLowerCase()))
+            .filter(e -> e.getNombre().toLowerCase().contains(busqueda))
             .toList();
 
         mostrarEventos(eventosFiltrados);
+        
+        if (eventosFiltrados.isEmpty()) {
+            mostrarInfo("No se encontraron eventos con el nombre: \"" + textoBusqueda + "\"");
+        }
     }
 
     // ========== MÉTODOS DE ACCIONES FXML ==========
@@ -468,26 +472,169 @@ public class EventosUsuarioController {
 
     @FXML
     private void handleFiltrarEventos() {
-        // TODO: Implementar filtro por tipo de evento
-        mostrarInfo("Filtro por tipo de evento en desarrollo");
+        // Obtener tipos de eventos únicos
+        List<String> tiposUnicos = eventosActuales.stream()
+            .filter(e -> e.getTipoEvento() != null)
+            .map(e -> e.getTipoEvento().getNombre())
+            .distinct()
+            .sorted()
+            .toList();
+        
+        if (tiposUnicos.isEmpty()) {
+            mostrarInfo("No hay tipos de eventos disponibles");
+            return;
+        }
+        
+        // Crear diálogo de selección
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("Todos", tiposUnicos);
+        dialog.setTitle("Filtrar por Tipo de Evento");
+        dialog.setHeaderText("Selecciona un tipo de evento");
+        dialog.setContentText("Tipo:");
+        
+        dialog.showAndWait().ifPresent(tipoSeleccionado -> {
+            if ("Todos".equals(tipoSeleccionado)) {
+                mostrarEventos(eventosActuales);
+            } else {
+                List<Evento> eventosFiltrados = eventosActuales.stream()
+                    .filter(e -> e.getTipoEvento() != null && 
+                                e.getTipoEvento().getNombre().equals(tipoSeleccionado))
+                    .toList();
+                mostrarEventos(eventosFiltrados);
+                mostrarInfo("Mostrando " + eventosFiltrados.size() + " evento(s) de tipo: " + tipoSeleccionado);
+            }
+        });
     }
 
     @FXML
     private void handleFiltrarFechas() {
-        // TODO: Implementar filtro por fechas
-        mostrarInfo("Filtro por fechas en desarrollo");
+        // Crear diálogo con DatePicker
+        Dialog<java.time.LocalDate> dialog = new Dialog<>();
+        dialog.setTitle("Filtrar por Fecha");
+        dialog.setHeaderText("Selecciona la fecha máxima para los eventos");
+        
+        // Configurar botones
+        ButtonType filtrarButtonType = new ButtonType("Filtrar", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(filtrarButtonType, ButtonType.CANCEL);
+        
+        // Crear DatePicker
+        DatePicker datePicker = new DatePicker();
+        datePicker.setValue(java.time.LocalDate.now().plusDays(30)); // Por defecto 30 días
+        datePicker.setPromptText("dd/MM/yyyy");
+        
+        // Layout
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new javafx.geometry.Insets(20, 150, 10, 10));
+        
+        Label instruccion = new Label("Los eventos se mostrarán desde hoy hasta la fecha seleccionada:");
+        instruccion.setWrapText(true);
+        
+        grid.add(instruccion, 0, 0);
+        grid.add(new Label("Fecha máxima:"), 0, 1);
+        grid.add(datePicker, 1, 1);
+        
+        dialog.getDialogPane().setContent(grid);
+        
+        // Convertir resultado
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == filtrarButtonType) {
+                return datePicker.getValue();
+            }
+            return null;
+        });
+        
+        // Procesar resultado
+        dialog.showAndWait().ifPresent(fechaMaxima -> {
+            java.time.LocalDateTime ahora = java.time.LocalDateTime.now();
+            java.time.LocalDateTime fechaLimite = fechaMaxima.atTime(23, 59, 59);
+            
+            if (fechaLimite.isBefore(ahora)) {
+                mostrarError("La fecha seleccionada debe ser igual o posterior a hoy");
+                return;
+            }
+            
+            List<Evento> eventosFiltrados = eventosActuales.stream()
+                .filter(e -> e.getFechaInicio() != null && 
+                            !e.getFechaInicio().isBefore(ahora) &&
+                            !e.getFechaInicio().isAfter(fechaLimite))
+                .toList();
+            
+            mostrarEventos(eventosFiltrados);
+            
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            mostrarInfo("Mostrando " + eventosFiltrados.size() + 
+                       " evento(s) hasta el " + fechaMaxima.format(formatter));
+        });
     }
 
     @FXML
     private void handleFiltrarPrecio() {
-        // TODO: Implementar filtro por precio
-        mostrarInfo("Filtro por precio en desarrollo");
+        TextInputDialog dialog = new TextInputDialog("1000");
+        dialog.setTitle("Filtrar por Precio");
+        dialog.setHeaderText("Precio máximo");
+        dialog.setContentText("Ingrese el precio máximo que desea pagar:");
+        
+        dialog.showAndWait().ifPresent(precioTexto -> {
+            try {
+                // Validar que sea un número válido
+                java.math.BigDecimal precioMaximo = new java.math.BigDecimal(precioTexto.trim());
+                
+                if (precioMaximo.compareTo(java.math.BigDecimal.ZERO) < 0) {
+                    mostrarError("El precio debe ser mayor o igual a 0");
+                    return;
+                }
+                
+                // Filtrar eventos por precio
+                List<Evento> eventosFiltrados = eventosActuales.stream()
+                    .filter(e -> e.getPrecioBase() != null && 
+                                e.getPrecioBase().compareTo(precioMaximo) <= 0)
+                    .toList();
+                
+                mostrarEventos(eventosFiltrados);
+                mostrarInfo("Mostrando " + eventosFiltrados.size() + 
+                           " evento(s) con precio hasta $" + precioMaximo);
+                           
+            } catch (NumberFormatException e) {
+                mostrarError("Por favor, ingrese un número válido");
+            }
+        });
     }
 
     @FXML
     private void handleLocalizacion() {
-        // TODO: Implementar filtro por localización
-        mostrarInfo("Filtro por localización en desarrollo");
+        // Obtener ciudades únicas
+        List<String> ciudadesUnicas = eventosActuales.stream()
+            .filter(e -> e.getSede() != null && e.getSede().getCiudad() != null)
+            .map(e -> e.getSede().getCiudad())
+            .distinct()
+            .sorted()
+            .toList();
+        
+        if (ciudadesUnicas.isEmpty()) {
+            mostrarInfo("No hay ciudades disponibles");
+            return;
+        }
+        
+        // Crear diálogo de selección
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("Todas", ciudadesUnicas);
+        dialog.setTitle("Filtrar por Localización");
+        dialog.setHeaderText("Selecciona una ciudad");
+        dialog.setContentText("Ciudad:");
+        
+        dialog.showAndWait().ifPresent(ciudadSeleccionada -> {
+            if ("Todas".equals(ciudadSeleccionada)) {
+                mostrarEventos(eventosActuales);
+            } else {
+                List<Evento> eventosFiltrados = eventosActuales.stream()
+                    .filter(e -> e.getSede() != null && 
+                                e.getSede().getCiudad() != null &&
+                                e.getSede().getCiudad().equals(ciudadSeleccionada))
+                    .toList();
+                mostrarEventos(eventosFiltrados);
+                mostrarInfo("Mostrando " + eventosFiltrados.size() + " evento(s) en: " + ciudadSeleccionada);
+            }
+        });
     }
 
     @FXML
@@ -641,9 +788,11 @@ public class EventosUsuarioController {
             Parent loginRoot = loader.load();
 
             Stage stage = (Stage) menuButton.getScene().getWindow();
-            Scene scene = new Scene(loginRoot);
+            Scene scene = new Scene(loginRoot, 600, 500);
             stage.setScene(scene);
-            stage.setTitle("Sistema de Gestión de Eventos - Login");
+            stage.setTitle("Sistema de Gesti\u00f3n de Eventos - Login");
+            stage.setResizable(true);
+            stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {
             mostrarError("Error al cargar el login: " + e.getMessage());

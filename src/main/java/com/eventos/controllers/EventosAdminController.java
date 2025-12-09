@@ -345,6 +345,7 @@ public class EventosAdminController {
         TextField fechaInicioField = new TextField();
         TextField fechaFinField = new TextField();
         TextField aforoField = new TextField();
+        TextField precioBaseField = new TextField();
         ComboBox<EstadoEvento> estadoCombo = new ComboBox<>();
 
         tipoCombo.setConverter(new StringConverter<>() {
@@ -388,7 +389,12 @@ public class EventosAdminController {
             fechaInicioField.setText(existente.getFechaInicio().toString());
             fechaFinField.setText(existente.getFechaFin().toString());
             aforoField.setText(String.valueOf(existente.getAforoMaximo()));
+            if (existente.getPrecioBase() != null) {
+                precioBaseField.setText(existente.getPrecioBase().toString());
+            }
             estadoCombo.setValue(existente.getEstado());
+        } else {
+            precioBaseField.setText("0"); // Valor por defecto
         }
 
         grid.add(new Label("Nombre"), 0, 0);
@@ -405,25 +411,41 @@ public class EventosAdminController {
         grid.add(fechaFinField, 1, 5);
         grid.add(new Label("Aforo máximo"), 0, 6);
         grid.add(aforoField, 1, 6);
-        grid.add(new Label("Estado"), 0, 7);
-        grid.add(estadoCombo, 1, 7);
+        grid.add(new Label("Precio base ($)"), 0, 7);
+        grid.add(precioBaseField, 1, 7);
+        grid.add(new Label("Estado"), 0, 8);
+        grid.add(estadoCombo, 1, 8);
 
         dialog.getDialogPane().setContent(grid);
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == guardarBtn) {
-                Evento ev = existente != null ? existente : new Evento();
-                ev.setNombre(nombreField.getText());
-                ev.setDescripcion(descripcionField.getText());
-                ev.setTipoEvento(tipoCombo.getValue());
-                ev.setSede(sedeCombo.getValue());
-                ev.setFechaInicio(parseFecha(fechaInicioField.getText()));
-                ev.setFechaFin(parseFecha(fechaFinField.getText()));
-                ev.setAforoMaximo(Integer.parseInt(aforoField.getText()));
-                if (estadoCombo.getValue() != null) {
-                    ev.setEstado(estadoCombo.getValue());
+                try {
+                    Evento ev = existente != null ? existente : new Evento();
+                    ev.setNombre(nombreField.getText());
+                    ev.setDescripcion(descripcionField.getText());
+                    ev.setTipoEvento(tipoCombo.getValue());
+                    ev.setSede(sedeCombo.getValue());
+                    ev.setFechaInicio(parseFecha(fechaInicioField.getText()));
+                    ev.setFechaFin(parseFecha(fechaFinField.getText()));
+                    ev.setAforoMaximo(Integer.parseInt(aforoField.getText()));
+                    
+                    // Parsear precio base
+                    String precioTexto = precioBaseField.getText().trim();
+                    if (!precioTexto.isEmpty()) {
+                        ev.setPrecioBase(new java.math.BigDecimal(precioTexto));
+                    } else {
+                        ev.setPrecioBase(java.math.BigDecimal.ZERO);
+                    }
+                    
+                    if (estadoCombo.getValue() != null) {
+                        ev.setEstado(estadoCombo.getValue());
+                    }
+                    return ev;
+                } catch (NumberFormatException e) {
+                    mostrarError("Error: El precio debe ser un número válido");
+                    return null;
                 }
-                return ev;
             }
             return null;
         });
@@ -447,10 +469,32 @@ public class EventosAdminController {
     }
 
     private LocalDateTime parseFecha(String texto) {
+        if (texto == null || texto.trim().isEmpty()) {
+            throw new com.eventos.exceptions.ValidationException("La fecha es obligatoria");
+        }
+        
         try {
+            // Intentar formato ISO con T (yyyy-MM-ddTHH:mm)
             return LocalDateTime.parse(texto);
-        } catch (Exception e) {
-            throw new com.eventos.exceptions.ValidationException("Formato de fecha inválido. Usa yyyy-MM-ddTHH:mm");
+        } catch (Exception e1) {
+            try {
+                // Intentar formato con espacio (yyyy-MM-dd HH:mm)
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                return LocalDateTime.parse(texto, formatter);
+            } catch (Exception e2) {
+                try {
+                    // Intentar formato dd/MM/yyyy HH:mm
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+                    return LocalDateTime.parse(texto, formatter);
+                } catch (Exception e3) {
+                    throw new com.eventos.exceptions.ValidationException(
+                        "Formato de fecha inválido. Usa uno de estos formatos:\n" +
+                        "- 2025-12-09T15:30\n" +
+                        "- 2025-12-09 15:30\n" +
+                        "- 09/12/2025 15:30"
+                    );
+                }
+            }
         }
     }
 
@@ -678,9 +722,11 @@ public class EventosAdminController {
             );
             javafx.scene.Parent loginRoot = loader.load();
             Stage stage = (Stage) avatarButton.getScene().getWindow();
-            javafx.scene.Scene scene = new javafx.scene.Scene(loginRoot);
+            javafx.scene.Scene scene = new javafx.scene.Scene(loginRoot, 600, 500);
             stage.setScene(scene);
-            stage.setTitle("Sistema de Gestión de Eventos - Login");
+            stage.setTitle("Sistema de Gesti\u00f3n de Eventos - Login");
+            stage.setResizable(true);
+            stage.centerOnScreen();
             stage.show();
         } catch (Exception e) {
             mostrarError("Error al cerrar sesión: " + e.getMessage());
