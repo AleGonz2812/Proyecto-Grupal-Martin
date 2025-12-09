@@ -2,6 +2,9 @@ package com.eventos.controllers;
 
 import com.eventos.models.Evento;
 import com.eventos.models.Usuario;
+import com.eventos.models.Compra;
+import com.eventos.models.Entrada;
+import com.eventos.models.EstadoCompra;
 import com.eventos.repositories.EventoRepository;
 import com.eventos.repositories.TipoEntradaRepository;
 import com.eventos.repositories.EntradaRepository;
@@ -767,9 +770,154 @@ public class EventosUsuarioController {
 
     @FXML
     private void handleHistorial() {
-        // TODO: Implementar historial de compras
-        mostrarInfo("Historial de compras en desarrollo");
         toggleMenu();
+        
+        if (usuarioActual == null) {
+            mostrarError("Debes iniciar sesión");
+            return;
+        }
+        
+        try {
+            List<Compra> compras = compraRepository.findAll().stream()
+                .filter(c -> c.getUsuario().getId().equals(usuarioActual.getId()))
+                .sorted((c1, c2) -> c2.getFechaCompra().compareTo(c1.getFechaCompra()))
+                .toList();
+            
+            if (compras.isEmpty()) {
+                mostrarInfo("No tienes compras registradas");
+                return;
+            }
+            
+            Dialog<Void> dialog = new Dialog<>();
+            dialog.setTitle("Historial de Compras");
+            dialog.setHeaderText("🎫 Mis Compras (" + compras.size() + ")");
+            
+            VBox content = new VBox(12);
+            content.setStyle("-fx-padding: 20;");
+            
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+            
+            for (Compra compra : compras) {
+                VBox compraCard = new VBox(8);
+                compraCard.setStyle("-fx-border-color: #3498db; -fx-border-width: 2; -fx-border-radius: 8; " +
+                                   "-fx-background-color: #ecf0f1; -fx-background-radius: 8; -fx-padding: 15;");
+                
+                // Encabezado de la compra
+                HBox header = new HBox(10);
+                header.setStyle("-fx-alignment: center-left;");
+                
+                Label codigoLabel = new Label("📋 Compra: " + compra.getCodigoConfirmacion());
+                codigoLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 13px;");
+                
+                Label fechaLabel = new Label("📅 " + compra.getFechaCompra().format(formatter));
+                fechaLabel.setStyle("-fx-text-fill: #7f8c8d;");
+                
+                Label estadoLabel = new Label(compra.getEstado().name());
+                estadoLabel.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; " +
+                                    "-fx-padding: 3 8; -fx-border-radius: 10; -fx-background-radius: 10;");
+                
+                header.getChildren().addAll(codigoLabel, fechaLabel, estadoLabel);
+                
+                // Detalles de entradas
+                VBox entradasBox = new VBox(5);
+                List<Entrada> entradas = entradaRepository.findAll().stream()
+                    .filter(e -> e.getCompra().getId().equals(compra.getId()))
+                    .toList();
+                
+                for (Entrada entrada : entradas) {
+                    HBox entradaRow = new HBox(10);
+                    entradaRow.setStyle("-fx-alignment: center-left; -fx-padding: 5; -fx-background-color: white; " +
+                                       "-fx-border-radius: 5; -fx-background-radius: 5;");
+                    
+                    Label numLabel = new Label("🎫 " + entrada.getNumeroEntrada());
+                    numLabel.setStyle("-fx-font-size: 11px; -fx-font-family: monospace;");
+                    
+                    Label eventoLabel = new Label(entrada.getEvento().getNombre());
+                    eventoLabel.setStyle("-fx-font-weight: bold;");
+                    
+                    Label tipoLabel = new Label(entrada.getTipoEntrada().getNombre() + " - $" + entrada.getTipoEntrada().getPrecio());
+                    tipoLabel.setStyle("-fx-text-fill: #3498db;");
+                    
+                    Label validadaLabel = new Label(entrada.getValidada() ? "✅ Validada" : "⏳ Pendiente");
+                    validadaLabel.setStyle(entrada.getValidada() ? "-fx-text-fill: #27ae60;" : "-fx-text-fill: #e67e22;");
+                    
+                    Button btnQR = new Button("Ver QR");
+                    btnQR.setStyle("-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-cursor: hand; -fx-font-size: 10px;");
+                    btnQR.setOnAction(e -> mostrarQR(entrada));
+                    
+                    entradaRow.getChildren().addAll(numLabel, eventoLabel, tipoLabel, validadaLabel, btnQR);
+                    entradasBox.getChildren().add(entradaRow);
+                }
+                
+                Separator sep = new Separator();
+                
+                // Total
+                Label totalLabel = new Label("💰 Total: $" + compra.getTotal());
+                totalLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #27ae60;");
+                
+                compraCard.getChildren().addAll(header, sep, entradasBox, totalLabel);
+                content.getChildren().add(compraCard);
+            }
+            
+            ScrollPane scrollPane = new ScrollPane(content);
+            scrollPane.setFitToWidth(true);
+            scrollPane.setPrefHeight(500);
+            scrollPane.setPrefWidth(700);
+            
+            dialog.getDialogPane().setContent(scrollPane);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+            dialog.showAndWait();
+            
+        } catch (Exception e) {
+            mostrarError("Error al cargar historial: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private void mostrarQR(Entrada entrada) {
+        if (entrada.getCodigoQR() == null || entrada.getCodigoQR().isEmpty()) {
+            mostrarError("Esta entrada no tiene código QR");
+            return;
+        }
+        
+        try {
+            Dialog<Void> qrDialog = new Dialog<>();
+            qrDialog.setTitle("Código QR");
+            qrDialog.setHeaderText("🎫 " + entrada.getEvento().getNombre());
+            
+            VBox content = new VBox(10);
+            content.setStyle("-fx-alignment: center; -fx-padding: 20;");
+            
+            // Decodificar base64 y mostrar imagen
+            String base64Data = entrada.getCodigoQR();
+            if (base64Data.contains(",")) {
+                base64Data = base64Data.split(",")[1];
+            }
+            
+            byte[] imageBytes = java.util.Base64.getDecoder().decode(base64Data);
+            java.io.ByteArrayInputStream bis = new java.io.ByteArrayInputStream(imageBytes);
+            javafx.scene.image.Image qrImage = new javafx.scene.image.Image(bis);
+            
+            javafx.scene.image.ImageView imageView = new javafx.scene.image.ImageView(qrImage);
+            imageView.setFitWidth(300);
+            imageView.setFitHeight(300);
+            imageView.setPreserveRatio(true);
+            
+            Label infoLabel = new Label("Número: " + entrada.getNumeroEntrada());
+            infoLabel.setStyle("-fx-font-size: 12px; -fx-font-family: monospace;");
+            
+            Label tipoLabel = new Label(entrada.getTipoEntrada().getNombre());
+            tipoLabel.setStyle("-fx-font-weight: bold;");
+            
+            content.getChildren().addAll(imageView, infoLabel, tipoLabel);
+            
+            qrDialog.getDialogPane().setContent(content);
+            qrDialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+            qrDialog.showAndWait();
+            
+        } catch (Exception e) {
+            mostrarError("Error al mostrar QR: " + e.getMessage());
+        }
     }
 
     private HBox crearTarjetaEntrada(com.eventos.models.Entrada entrada) {

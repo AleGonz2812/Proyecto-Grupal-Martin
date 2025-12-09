@@ -164,7 +164,7 @@ CREATE TABLE IF NOT EXISTS entradas (
     numero_entrada VARCHAR(50) UNIQUE NOT NULL,
     validada BOOLEAN NOT NULL DEFAULT FALSE,
     fecha_validacion DATETIME,
-    codigo_qr VARCHAR(500) UNIQUE,
+    codigo_qr TEXT,
     FOREIGN KEY (tipo_entrada_id) REFERENCES tipos_entrada(id),
     FOREIGN KEY (evento_id) REFERENCES eventos(id),
     FOREIGN KEY (compra_id) REFERENCES compras(id) ON DELETE CASCADE,

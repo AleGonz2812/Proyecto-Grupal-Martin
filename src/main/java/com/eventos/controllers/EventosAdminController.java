@@ -5,8 +5,13 @@ import com.eventos.models.EstadoEvento;
 import com.eventos.models.Sede;
 import com.eventos.models.TipoEvento;
 import com.eventos.models.Usuario;
+import com.eventos.models.Compra;
+import com.eventos.models.Entrada;
 import com.eventos.repositories.SedeRepository;
 import com.eventos.repositories.TipoEventoRepository;
+import com.eventos.repositories.UsuarioRepository;
+import com.eventos.repositories.CompraRepository;
+import com.eventos.repositories.EntradaRepository;
 import com.eventos.services.AutenticacionService;
 import com.eventos.services.EventoService;
 import com.eventos.utils.HotReloadManager;
@@ -16,8 +21,9 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import javafx.util.StringConverter;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
 import javafx.stage.Stage;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -29,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Controlador para la vista de gestión de eventos (Administrador).
@@ -87,6 +94,9 @@ public class EventosAdminController {
     private final EventoService eventoService;
     private final SedeRepository sedeRepository;
     private final TipoEventoRepository tipoEventoRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final CompraRepository compraRepository;
+    private final EntradaRepository entradaRepository;
     private final AutenticacionService autenticacionService;
     private ObservableList<Evento> eventosObservable;
     private List<Evento> eventosActuales = new ArrayList<>();
@@ -100,6 +110,9 @@ public class EventosAdminController {
         this.eventoService = new EventoService();
         this.sedeRepository = new SedeRepository();
         this.tipoEventoRepository = new TipoEventoRepository();
+        this.usuarioRepository = new UsuarioRepository();
+        this.compraRepository = new CompraRepository();
+        this.entradaRepository = new EntradaRepository();
         this.autenticacionService = AutenticacionService.getInstance();
     }
 
@@ -197,8 +210,14 @@ public class EventosAdminController {
         );
         
         estadoColumn.setCellValueFactory(cellData -> {
-            String estado = cellData.getValue().getEstado().name();
-            return new SimpleStringProperty(estado.equals("ACTIVO") ? "✅ Activo" : "❌ Inactivo");
+            EstadoEvento estado = cellData.getValue().getEstado();
+            String textoEstado = switch (estado) {
+                case PLANIFICADO -> "📅 Planificado";
+                case ACTIVO -> "✅ Activo";
+                case CANCELADO -> "❌ Cancelado";
+                case FINALIZADO -> "✔️ Finalizado";
+            };
+            return new SimpleStringProperty(textoEstado);
         });
     }
 
@@ -206,16 +225,34 @@ public class EventosAdminController {
      * Configura los filtros (ComboBox).
      */
     private void configurarFiltros() {
-        // TODO: Cargar tipos de eventos desde BD
-        filtroTipoCombo.setItems(FXCollections.observableArrayList(
-            "Todos", "Concierto", "Deportivo", "Teatro", "Conferencia"
-        ));
-        filtroTipoCombo.setValue("Todos");
+        // Cargar tipos de eventos dinámicamente desde la base de datos
+        try {
+            List<String> tiposEventos = tipoEventoRepository.findAll().stream()
+                .map(TipoEvento::getNombre)
+                .sorted()
+                .toList();
+            List<String> tiposConTodos = new ArrayList<>();
+            tiposConTodos.add("Todos");
+            tiposConTodos.addAll(tiposEventos);
+            filtroTipoCombo.setItems(FXCollections.observableArrayList(tiposConTodos));
+            filtroTipoCombo.setValue("Todos");
+        } catch (Exception e) {
+            filtroTipoCombo.setItems(FXCollections.observableArrayList("Todos"));
+            filtroTipoCombo.setValue("Todos");
+        }
         
         filtroEstadoCombo.setItems(FXCollections.observableArrayList(
-            "Todos", "Activos", "Inactivos"
+            "Todos", "Planificados", "Activos", "Cancelados", "Finalizados"
         ));
         filtroEstadoCombo.setValue("Todos");
+        
+        // Agregar listeners para aplicar filtros automáticamente
+        filtroTipoCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) handleFiltrarTipo();
+        });
+        filtroEstadoCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) handleFiltrarEstado();
+        });
     }
 
     /**
@@ -583,8 +620,19 @@ public class EventosAdminController {
         }
         
         try {
-            String estadoBuscado = estadoSeleccionado.equals("Activos") ? EstadoEvento.ACTIVO.name() : EstadoEvento.CANCELADO.name();
-            List<Evento> eventosFiltrados = eventoService.filtrarPorEstado(EstadoEvento.valueOf(estadoBuscado));
+            EstadoEvento estado;
+            switch (estadoSeleccionado) {
+                case "Planificados" -> estado = EstadoEvento.PLANIFICADO;
+                case "Activos" -> estado = EstadoEvento.ACTIVO;
+                case "Cancelados" -> estado = EstadoEvento.CANCELADO;
+                case "Finalizados" -> estado = EstadoEvento.FINALIZADO;
+                default -> {
+                    cargarEventos();
+                    return;
+                }
+            }
+            
+            List<Evento> eventosFiltrados = eventoService.filtrarPorEstado(estado);
             eventosObservable = FXCollections.observableArrayList(eventosFiltrados);
             eventosTable.setItems(eventosObservable);
             infoLabel.setText(eventosFiltrados.size() + " eventos " + estadoSeleccionado.toLowerCase());
@@ -627,30 +675,329 @@ public class EventosAdminController {
 
     @FXML
     private void handleMisSedes() {
-        // TODO: Implementar vista de gestión de sedes
-        mostrarInfo("Gestión de sedes en desarrollo");
         toggleMenu();
+        
+        try {
+            List<Sede> sedes = sedeRepository.findAll();
+            
+            if (sedes.isEmpty()) {
+                mostrarInfo("No hay sedes registradas");
+                return;
+            }
+            
+            Dialog<Void> dialog = new Dialog<>();
+            dialog.setTitle("Mis Sedes");
+            dialog.setHeaderText("📍 Sedes Registradas (" + sedes.size() + ")");
+            
+            VBox content = new VBox(10);
+            content.setStyle("-fx-padding: 20;");
+            
+            for (Sede sede : sedes) {
+                VBox sedeCard = new VBox(5);
+                sedeCard.setStyle("-fx-border-color: #bdc3c7; -fx-border-width: 1; -fx-border-radius: 5; " +
+                                 "-fx-background-color: white; -fx-background-radius: 5; -fx-padding: 15;");
+                
+                Label nombreLabel = new Label("🏢 " + sede.getNombre());
+                nombreLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+                
+                Label ubicacionLabel = new Label("📍 " + sede.getCiudad() + ", " + sede.getProvincia());
+                Label direccionLabel = new Label("   " + sede.getDireccion());
+                Label capacidadLabel = new Label("👥 Capacidad: " + sede.getCapacidad() + " personas");
+                Label estadoLabel = new Label(sede.getActiva() ? "✅ Activa" : "❌ Inactiva");
+                estadoLabel.setStyle(sede.getActiva() ? "-fx-text-fill: #27ae60;" : "-fx-text-fill: #e74c3c;");
+                
+                sedeCard.getChildren().addAll(nombreLabel, ubicacionLabel, direccionLabel, capacidadLabel, estadoLabel);
+                content.getChildren().add(sedeCard);
+            }
+            
+            ScrollPane scrollPane = new ScrollPane(content);
+            scrollPane.setFitToWidth(true);
+            scrollPane.setPrefHeight(400);
+            scrollPane.setPrefWidth(500);
+            
+            dialog.getDialogPane().setContent(scrollPane);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+            dialog.showAndWait();
+            
+        } catch (Exception e) {
+            mostrarError("Error al cargar sedes: " + e.getMessage());
+        }
     }
 
     @FXML
     private void handleMisEventos() {
-        // Recargar la vista de eventos
-        cargarEventos();
         toggleMenu();
+        
+        try {
+            List<Evento> eventos = eventoService.listarTodos();
+            
+            if (eventos.isEmpty()) {
+                mostrarInfo("No hay eventos registrados");
+                return;
+            }
+            
+            Dialog<Void> dialog = new Dialog<>();
+            dialog.setTitle("Mis Eventos");
+            dialog.setHeaderText("🎭 Eventos del Sistema (" + eventos.size() + ")");
+            
+            VBox content = new VBox(10);
+            content.setStyle("-fx-padding: 20;");
+            
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+            
+            for (Evento evento : eventos) {
+                VBox eventoCard = new VBox(5);
+                String borderColor;
+                switch (evento.getEstado()) {
+                    case PLANIFICADO -> borderColor = "#3498db";
+                    case ACTIVO -> borderColor = "#27ae60";
+                    case CANCELADO -> borderColor = "#e74c3c";
+                    case FINALIZADO -> borderColor = "#95a5a6";
+                    default -> borderColor = "#95a5a6";
+                }
+                
+                eventoCard.setStyle("-fx-border-color: " + borderColor + "; -fx-border-width: 2; -fx-border-radius: 5; " +
+                                   "-fx-background-color: white; -fx-background-radius: 5; -fx-padding: 15;");
+                
+                Label nombreLabel = new Label("🎭 " + evento.getNombre());
+                nombreLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+                
+                Label tipoLabel = new Label("📋 " + evento.getTipoEvento().getNombre());
+                Label sedeLabel = new Label("📍 " + evento.getSede().getNombre() + " - " + evento.getSede().getCiudad());
+                Label fechaLabel = new Label("📅 " + evento.getFechaInicio().format(formatter) + " - " + evento.getFechaFin().format(formatter));
+                Label aforoLabel = new Label("👥 Aforo: " + evento.getAforoActual() + "/" + evento.getAforoMaximo());
+                
+                String estadoTexto;
+                switch (evento.getEstado()) {
+                    case PLANIFICADO -> estadoTexto = "📅 Planificado";
+                    case ACTIVO -> estadoTexto = "✅ Activo";
+                    case CANCELADO -> estadoTexto = "❌ Cancelado";
+                    case FINALIZADO -> estadoTexto = "✔️ Finalizado";
+                    default -> estadoTexto = "❓ Desconocido";
+                }
+                Label estadoLabel = new Label(estadoTexto);
+                estadoLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: " + borderColor + ";");
+                
+                eventoCard.getChildren().addAll(nombreLabel, tipoLabel, sedeLabel, fechaLabel, aforoLabel, estadoLabel);
+                
+                if (evento.getPrecioBase() != null) {
+                    Label precioLabel = new Label("💰 Precio base: $" + evento.getPrecioBase());
+                    precioLabel.setStyle("-fx-text-fill: #27ae60; -fx-font-weight: bold;");
+                    eventoCard.getChildren().add(precioLabel);
+                }
+                
+                content.getChildren().add(eventoCard);
+            }
+            
+            ScrollPane scrollPane = new ScrollPane(content);
+            scrollPane.setFitToWidth(true);
+            scrollPane.setPrefHeight(450);
+            scrollPane.setPrefWidth(600);
+            
+            dialog.getDialogPane().setContent(scrollPane);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+            dialog.showAndWait();
+            
+        } catch (Exception e) {
+            mostrarError("Error al cargar eventos: " + e.getMessage());
+        }
     }
 
     @FXML
     private void handleGestionarUsuarios() {
-        // TODO: Implementar vista de gestión de usuarios
-        mostrarInfo("Gestión de usuarios en desarrollo");
         toggleMenu();
+        
+        try {
+            List<Usuario> usuarios = usuarioRepository.findAll().stream()
+                .filter(u -> !u.getRol().getNombre().equalsIgnoreCase("ADMIN"))
+                .toList();
+            
+            if (usuarios.isEmpty()) {
+                mostrarInfo("No hay usuarios registrados");
+                return;
+            }
+            
+            Dialog<Void> dialog = new Dialog<>();
+            dialog.setTitle("Gestionar Usuarios");
+            dialog.setHeaderText("👥 Usuarios del Sistema (" + usuarios.size() + ")");
+            
+            VBox content = new VBox(10);
+            content.setStyle("-fx-padding: 20;");
+            
+            for (Usuario usuario : usuarios) {
+                HBox usuarioCard = new HBox(15);
+                usuarioCard.setStyle("-fx-border-color: #bdc3c7; -fx-border-width: 1; -fx-border-radius: 5; " +
+                                    "-fx-background-color: white; -fx-background-radius: 5; -fx-padding: 10; -fx-alignment: center-left;");
+                
+                VBox infoBox = new VBox(3);
+                infoBox.setStyle("-fx-flex-grow: 1;");
+                
+                Label nombreLabel = new Label("👤 " + usuario.getNombre());
+                nombreLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 13px;");
+                
+                Label emailLabel = new Label("📧 " + usuario.getEmail());
+                Label dniLabel = new Label("🆔 " + usuario.getDni());
+                Label telefonoLabel = new Label("📞 " + (usuario.getTelefono() != null ? usuario.getTelefono() : "N/A"));
+                
+                infoBox.getChildren().addAll(nombreLabel, emailLabel, dniLabel, telefonoLabel);
+                
+                VBox botonesBox = new VBox(5);
+                
+                Button btnEliminar = new Button("🗑️ Eliminar");
+                btnEliminar.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-cursor: hand;");
+                btnEliminar.setOnAction(e -> {
+                    Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                    confirmAlert.setTitle("Confirmar Eliminación");
+                    confirmAlert.setHeaderText("¿Eliminar usuario?");
+                    confirmAlert.setContentText("¿Estás seguro de eliminar a " + usuario.getNombre() + "?");
+                    
+                    confirmAlert.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.OK) {
+                            try {
+                                usuarioRepository.delete(usuario.getId());
+                                mostrarExito("Usuario eliminado correctamente");
+                                dialog.close();
+                                handleGestionarUsuarios();
+                            } catch (Exception ex) {
+                                mostrarError("Error al eliminar usuario: " + ex.getMessage());
+                            }
+                        }
+                    });
+                });
+                
+                botonesBox.getChildren().add(btnEliminar);
+                
+                usuarioCard.getChildren().addAll(infoBox, botonesBox);
+                content.getChildren().add(usuarioCard);
+            }
+            
+            ScrollPane scrollPane = new ScrollPane(content);
+            scrollPane.setFitToWidth(true);
+            scrollPane.setPrefHeight(450);
+            scrollPane.setPrefWidth(600);
+            
+            dialog.getDialogPane().setContent(scrollPane);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+            dialog.showAndWait();
+            
+        } catch (Exception e) {
+            mostrarError("Error al cargar usuarios: " + e.getMessage());
+        }
     }
 
     @FXML
     private void handleEstadisticas() {
-        // TODO: Implementar vista de estadísticas
-        mostrarInfo("Estadísticas en desarrollo");
         toggleMenu();
+        
+        try {
+            // Obtener estadísticas
+            List<Evento> todosEventos = eventoService.listarTodos();
+            List<Compra> todasCompras = compraRepository.findAll();
+            List<Entrada> todasEntradas = entradaRepository.findAll();
+            List<Usuario> todosUsuarios = usuarioRepository.findAll();
+            
+            long eventosActivos = todosEventos.stream().filter(e -> e.getEstado() == EstadoEvento.ACTIVO).count();
+            long eventosCancelados = todosEventos.stream().filter(e -> e.getEstado() == EstadoEvento.CANCELADO).count();
+            long eventosFinalizados = todosEventos.stream().filter(e -> e.getEstado() == EstadoEvento.FINALIZADO).count();
+            
+            long totalEntradas = todasEntradas.size();
+            long entradasValidadas = todasEntradas.stream().filter(e -> e.getValidada() != null && e.getValidada()).count();
+            
+            java.math.BigDecimal dineroTotal = todasCompras.stream()
+                .map(Compra::getTotal)
+                .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+            
+            int usuariosRegistrados = todosUsuarios.size() - 1; // Sin contar admin
+            
+            Dialog<Void> dialog = new Dialog<>();
+            dialog.setTitle("Estadísticas del Sistema");
+            dialog.setHeaderText("📊 Panel de Estadísticas");
+            
+            GridPane grid = new GridPane();
+            grid.setHgap(20);
+            grid.setVgap(15);
+            grid.setStyle("-fx-padding: 25;");
+            
+            int row = 0;
+            
+            // Eventos
+            Label eventosHeader = new Label("🎭 EVENTOS");
+            eventosHeader.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #2c3e50;");
+            grid.add(eventosHeader, 0, row++, 2, 1);
+            
+            grid.add(new Label("Total de eventos:"), 0, row);
+            Label totalEventosLabel = new Label(String.valueOf(todosEventos.size()));
+            totalEventosLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+            grid.add(totalEventosLabel, 1, row++);
+            
+            grid.add(new Label("✅ Eventos activos:"), 0, row);
+            Label activosLabel = new Label(String.valueOf(eventosActivos));
+            activosLabel.setStyle("-fx-text-fill: #27ae60; -fx-font-weight: bold;");
+            grid.add(activosLabel, 1, row++);
+            
+            grid.add(new Label("❌ Eventos cancelados:"), 0, row);
+            Label canceladosLabel = new Label(String.valueOf(eventosCancelados));
+            canceladosLabel.setStyle("-fx-text-fill: #e74c3c; -fx-font-weight: bold;");
+            grid.add(canceladosLabel, 1, row++);
+            
+            grid.add(new Label("✔️ Eventos finalizados:"), 0, row);
+            Label finalizadosLabel = new Label(String.valueOf(eventosFinalizados));
+            finalizadosLabel.setStyle("-fx-text-fill: #95a5a6; -fx-font-weight: bold;");
+            grid.add(finalizadosLabel, 1, row++);
+            
+            grid.add(new Separator(), 0, row++, 2, 1);
+            
+            // Entradas
+            Label entradasHeader = new Label("🎫 ENTRADAS");
+            entradasHeader.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #2c3e50;");
+            grid.add(entradasHeader, 0, row++, 2, 1);
+            
+            grid.add(new Label("Total vendidas:"), 0, row);
+            Label totalEntradasLabel = new Label(String.valueOf(totalEntradas));
+            totalEntradasLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+            grid.add(totalEntradasLabel, 1, row++);
+            
+            grid.add(new Label("✅ Validadas:"), 0, row);
+            Label validadasLabel = new Label(String.valueOf(entradasValidadas));
+            validadasLabel.setStyle("-fx-text-fill: #27ae60; -fx-font-weight: bold;");
+            grid.add(validadasLabel, 1, row++);
+            
+            grid.add(new Separator(), 0, row++, 2, 1);
+            
+            // Ingresos
+            Label ingresosHeader = new Label("💰 INGRESOS");
+            ingresosHeader.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #2c3e50;");
+            grid.add(ingresosHeader, 0, row++, 2, 1);
+            
+            grid.add(new Label("Total compras:"), 0, row);
+            Label totalComprasLabel = new Label(String.valueOf(todasCompras.size()));
+            totalComprasLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+            grid.add(totalComprasLabel, 1, row++);
+            
+            grid.add(new Label("Dinero generado:"), 0, row);
+            Label dineroLabel = new Label("$" + dineroTotal.toString());
+            dineroLabel.setStyle("-fx-text-fill: #27ae60; -fx-font-weight: bold; -fx-font-size: 18px;");
+            grid.add(dineroLabel, 1, row++);
+            
+            grid.add(new Separator(), 0, row++, 2, 1);
+            
+            // Usuarios
+            Label usuariosHeader = new Label("👥 USUARIOS");
+            usuariosHeader.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #2c3e50;");
+            grid.add(usuariosHeader, 0, row++, 2, 1);
+            
+            grid.add(new Label("Usuarios registrados:"), 0, row);
+            Label usuariosLabel = new Label(String.valueOf(usuariosRegistrados));
+            usuariosLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+            grid.add(usuariosLabel, 1, row++);
+            
+            dialog.getDialogPane().setContent(grid);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+            dialog.showAndWait();
+            
+        } catch (Exception e) {
+            mostrarError("Error al cargar estadísticas: " + e.getMessage());
+        }
     }
 
     @FXML

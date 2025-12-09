@@ -26,7 +26,7 @@ public class Entrada {
     @JoinColumn(name = "compra_id", nullable = false)
     private Compra compra;
     
-    @Column(unique = true, nullable = false, length = 50)
+    @Column(name = "numero_entrada", unique = true, nullable = false, length = 50)
     private String numeroEntrada;
     
     @Column(nullable = false)
@@ -35,7 +35,7 @@ public class Entrada {
     @Column(name = "fecha_validacion")
     private LocalDateTime fechaValidacion;
     
-    @Column(name = "codigo_qr", unique = true, length = 500)
+    @Column(name = "codigo_qr", columnDefinition = "TEXT")
     private String codigoQR;
     
     // Constructores
