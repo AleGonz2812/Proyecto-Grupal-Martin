@@ -3123,3 +3123,40 @@ Caused by: java.net.ConnectException: Connection refused: connect
 2025-12-09 20:15:28 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
 2025-12-09 20:15:28 [JavaFX Application Thread] INFO  com.eventos.Main -   Aplicación cerrada correctamente
 2025-12-09 20:15:28 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 20:39:39 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 20:39:39 [main] INFO  com.eventos.Main -   Sistema de Gestión de Eventos v1.0.0
+2025-12-09 20:39:39 [main] INFO  com.eventos.Main - =================================================
+2025-12-09 20:39:39 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando aplicación...
+2025-12-09 20:39:39 [JavaFX-Launcher] INFO  com.eventos.Main - Inicializando conexión a base de datos...
+2025-12-09 20:39:39 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - Inicializando EntityManagerFactory...
+2025-12-09 20:39:42 [JavaFX-Launcher] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory inicializado correctamente
+2025-12-09 20:39:42 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Conexión a base de datos establecida correctamente
+2025-12-09 20:39:42 [JavaFX-Launcher] INFO  com.eventos.Main - ✓ Aplicación inicializada correctamente
+2025-12-09 20:39:42 [JavaFX Application Thread] INFO  com.eventos.Main - Iniciando interfaz gráfica...
+2025-12-09 20:39:42 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 20:39:42 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Estilos CSS cargados
+2025-12-09 20:39:43 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Interfaz gráfica cargada correctamente
+2025-12-09 20:39:43 [JavaFX Application Thread] INFO  com.eventos.Main - Sistema listo para usar
+2025-12-09 20:39:58 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 20:39:58 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: fran@gmail.com
+2025-12-09 20:39:59 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: fran@gmail.com - Rol: USUARIO
+2025-12-09 20:39:59 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: fran@gmail.com - Rol: USUARIO
+2025-12-09 20:39:59 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: USUARIO
+2025-12-09 20:40:00 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 20:40:01 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_usuario.fxml
+2025-12-09 20:42:13 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Logout del usuario: fran@gmail.com
+2025-12-09 20:42:13 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Inicializando pantalla de login
+2025-12-09 20:42:22 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Intentando iniciar sesión...
+2025-12-09 20:42:22 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Intento de login para el usuario: admin@eventos.com
+2025-12-09 20:42:23 [JavaFX Application Thread] INFO  com.eventos.services.AutenticacionService - Login exitoso para el usuario: admin@eventos.com - Rol: ADMIN
+2025-12-09 20:42:23 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Login exitoso para: admin@eventos.com - Rol: ADMIN
+2025-12-09 20:42:23 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Cargando vista de eventos para rol: ADMIN
+2025-12-09 20:42:23 [JavaFX Application Thread] INFO  com.eventos.utils.HotReloadManager - ✓ Atajos de hot reload configurados (F5=FXML+CSS, F6=CSS)
+2025-12-09 20:42:23 [JavaFX Application Thread] INFO  com.eventos.controllers.LoginController - Vista de eventos cargada correctamente: /fxml/eventos_admin.fxml
+2025-12-09 20:42:33 [JavaFX Application Thread] INFO  com.eventos.Main - Cerrando aplicación...
+2025-12-09 20:42:33 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - Cerrando EntityManagerFactory...
+2025-12-09 20:42:33 [JavaFX Application Thread] INFO  com.eventos.config.HibernateUtil - EntityManagerFactory cerrado
+2025-12-09 20:42:33 [JavaFX Application Thread] INFO  com.eventos.Main - ✓ Conexión a base de datos cerrada correctamente
+2025-12-09 20:42:33 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================
+2025-12-09 20:42:33 [JavaFX Application Thread] INFO  com.eventos.Main -   Aplicación cerrada correctamente
+2025-12-09 20:42:33 [JavaFX Application Thread] INFO  com.eventos.Main - =================================================

@@ -11,6 +11,7 @@ import com.eventos.repositories.EntradaRepository;
 import com.eventos.repositories.CompraRepository;
 import com.eventos.services.AutenticacionService;
 import com.eventos.services.CompraService;
+import com.eventos.services.PagoService;
 import com.eventos.models.TipoEntrada;
 import com.eventos.utils.HotReloadManager;
 import javafx.fxml.FXML;
@@ -43,6 +44,7 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Locale;
+import java.math.BigDecimal;
 
 import java.io.IOException;
 import java.io.ByteArrayInputStream;
@@ -501,16 +503,235 @@ public class EventosUsuarioController {
                 return;
             }
             
-            try {
-                compraService.procesarCompra(usuarioActual.getId(), evento.getId(), sel.getId(), cantidad, "Tarjeta");
-                mostrarInfo("✅ Compra realizada exitosamente\n\n" +
-                           "Se han generado " + cantidad + " entrada(s) con código QR.\n" +
-                           "Puedes ver tus entradas en la sección 'Mis Compras'.");
-                cargarEventos(); // Recargar para actualizar aforo
-            } catch (Exception e) {
-                mostrarError("❌ Error al procesar la compra:\n" + e.getMessage());
+            // Mostrar diálogo de pago
+            BigDecimal total = sel.getPrecio().multiply(BigDecimal.valueOf(cantidad));
+            mostrarDialogoPago(evento, sel, cantidad, total);
+        });
+    }
+
+    /**
+     * Muestra el diálogo de pago con validación de tarjeta.
+     */
+    private void mostrarDialogoPago(Evento evento, TipoEntrada tipoEntrada, int cantidad, BigDecimal total) {
+        Dialog<ButtonType> pagoDialog = new Dialog<>();
+        pagoDialog.setTitle("Procesamiento de Pago");
+        pagoDialog.setHeaderText("💳 Ingresa los datos de tu tarjeta");
+
+        ButtonType pagarBtn = new ButtonType("Pagar $" + total, ButtonBar.ButtonData.OK_DONE);
+        ButtonType testCardsBtn = new ButtonType("Ver tarjetas de prueba", ButtonBar.ButtonData.HELP);
+        pagoDialog.getDialogPane().getButtonTypes().addAll(pagarBtn, testCardsBtn, ButtonType.CANCEL);
+
+        // Campos del formulario
+        TextField numeroTarjetaField = new TextField();
+        numeroTarjetaField.setPromptText("1234 5678 9012 3456");
+        Label tipoTarjetaLabel = new Label("");
+        tipoTarjetaLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #27ae60; -fx-font-weight: bold;");
+        
+        TextField expiracionField = new TextField();
+        expiracionField.setPromptText("MM/YY");
+        expiracionField.setMaxWidth(100);
+        
+        TextField cvvField = new TextField();
+        cvvField.setPromptText("123");
+        cvvField.setMaxWidth(80);
+        
+        TextField nombreField = new TextField();
+        nombreField.setPromptText("Nombre como aparece en la tarjeta");
+
+        // Validación en tiempo real del número de tarjeta
+        numeroTarjetaField.textProperty().addListener((obs, old, nuevo) -> {
+            if (nuevo != null && !nuevo.isEmpty()) {
+                String tipoTarjeta = PagoService.detectarTipoTarjeta(nuevo);
+                if (!tipoTarjeta.equals("Desconocido")) {
+                    tipoTarjetaLabel.setText("🔹 " + tipoTarjeta);
+                } else {
+                    tipoTarjetaLabel.setText("");
+                }
+            } else {
+                tipoTarjetaLabel.setText("");
             }
         });
+
+        // Grid del formulario
+        GridPane pagoGrid = new GridPane();
+        pagoGrid.setHgap(10);
+        pagoGrid.setVgap(12);
+        pagoGrid.setStyle("-fx-padding: 20;");
+
+        Label totalInfoLabel = new Label("Total a pagar: $" + total);
+        totalInfoLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        
+        Label detalleLabel = new Label(cantidad + " entrada(s) - " + tipoEntrada.getNombre());
+        detalleLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #7f8c8d;");
+
+        pagoGrid.add(totalInfoLabel, 0, 0, 2, 1);
+        pagoGrid.add(detalleLabel, 0, 1, 2, 1);
+        
+        Separator sep1 = new Separator();
+        pagoGrid.add(sep1, 0, 2, 2, 1);
+
+        pagoGrid.add(new Label("Número de tarjeta:"), 0, 3);
+        pagoGrid.add(numeroTarjetaField, 1, 3);
+        pagoGrid.add(tipoTarjetaLabel, 1, 4);
+
+        HBox expirationCvvBox = new HBox(10);
+        VBox expBox = new VBox(5);
+        expBox.getChildren().addAll(new Label("Expiración:"), expiracionField);
+        VBox cvvBox = new VBox(5);
+        Label cvvLabelWithHelp = new Label("CVV:");
+        cvvLabelWithHelp.setTooltip(new javafx.scene.control.Tooltip("Los 3 dígitos en el reverso de tu tarjeta\n(4 dígitos para American Express)"));
+        cvvBox.getChildren().addAll(cvvLabelWithHelp, cvvField);
+        expirationCvvBox.getChildren().addAll(expBox, cvvBox);
+        
+        pagoGrid.add(expirationCvvBox, 0, 5, 2, 1);
+
+        pagoGrid.add(new Label("Nombre del titular:"), 0, 6);
+        pagoGrid.add(nombreField, 1, 6);
+
+        pagoDialog.getDialogPane().setContent(pagoGrid);
+        pagoDialog.getDialogPane().setMinWidth(500);
+
+        // Manejar botón de tarjetas de prueba
+        Button testCardsButton = (Button) pagoDialog.getDialogPane().lookupButton(testCardsBtn);
+        testCardsButton.addEventFilter(javafx.event.ActionEvent.ACTION, event -> {
+            event.consume();
+            mostrarTarjetasPrueba();
+        });
+
+        // Procesar resultado
+        pagoDialog.setResultConverter(dialogButton -> {
+            if (dialogButton == pagarBtn) {
+                return pagarBtn;
+            }
+            return null;
+        });
+
+        pagoDialog.showAndWait().ifPresent(result -> {
+            String numeroTarjeta = numeroTarjetaField.getText().trim();
+            String expiracion = expiracionField.getText().trim();
+            String cvv = cvvField.getText().trim();
+            String nombre = nombreField.getText().trim();
+
+            // Validar campos vacíos
+            if (numeroTarjeta.isEmpty() || expiracion.isEmpty() || cvv.isEmpty() || nombre.isEmpty()) {
+                mostrarError("❌ Todos los campos son obligatorios");
+                return;
+            }
+
+            // Procesar pago con animación
+            procesarPagoConAnimacion(numeroTarjeta, expiracion, cvv, nombre, total, evento, tipoEntrada, cantidad);
+        });
+    }
+
+    /**
+     * Procesa el pago mostrando una animación de carga.
+     */
+    private void procesarPagoConAnimacion(String numeroTarjeta, String expiracion, String cvv, 
+                                          String nombre, BigDecimal monto, Evento evento, 
+                                          TipoEntrada tipoEntrada, int cantidad) {
+        // Crear ventana de procesamiento
+        Dialog<Void> processingDialog = new Dialog<>();
+        processingDialog.setTitle("Procesando Pago");
+        processingDialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        Button closeButton = (Button) processingDialog.getDialogPane().lookupButton(ButtonType.CLOSE);
+        closeButton.setVisible(false);
+
+        VBox content = new VBox(15);
+        content.setStyle("-fx-padding: 30; -fx-alignment: center;");
+        
+        ProgressIndicator progress = new ProgressIndicator();
+        progress.setPrefSize(60, 60);
+        
+        Label messageLabel = new Label("Validando información de pago...");
+        messageLabel.setStyle("-fx-font-size: 14px;");
+        
+        content.getChildren().addAll(progress, messageLabel);
+        processingDialog.getDialogPane().setContent(content);
+        processingDialog.getDialogPane().setMinWidth(400);
+        processingDialog.getDialogPane().setMinHeight(200);
+
+        processingDialog.show();
+
+        // Procesar en thread separado
+        new Thread(() -> {
+            try {
+                PagoService.ResultadoPago resultado = PagoService.procesarPago(
+                    numeroTarjeta, expiracion, cvv, nombre, monto.doubleValue()
+                );
+
+                javafx.application.Platform.runLater(() -> {
+                    processingDialog.close();
+                    
+                    if (resultado.isExitoso()) {
+                        // Pago exitoso - procesar compra
+                        try {
+                            String tipoTarjeta = PagoService.detectarTipoTarjeta(numeroTarjeta);
+                            compraService.procesarCompra(
+                                usuarioActual.getId(), 
+                                evento.getId(), 
+                                tipoEntrada.getId(), 
+                                cantidad, 
+                                tipoTarjeta
+                            );
+                            
+                            mostrarInfo("✅ PAGO APROBADO\n\n" +
+                                       "Número de autorización: " + resultado.getNumeroAutorizacion() + "\n" +
+                                       "Número de transacción: " + resultado.getNumeroTransaccion() + "\n\n" +
+                                       "Se han generado " + cantidad + " entrada(s) con código QR.\n" +
+                                       "Puedes ver tus entradas en 'Historial de Compras'.");
+                            cargarEventos(); // Recargar para actualizar aforo
+                        } catch (Exception e) {
+                            mostrarError("❌ El pago fue aprobado pero hubo un error al generar las entradas:\n" + e.getMessage());
+                        }
+                    } else {
+                        // Pago rechazado
+                        mostrarError("❌ PAGO RECHAZADO\n\n" + resultado.getMensaje());
+                    }
+                });
+            } catch (Exception e) {
+                javafx.application.Platform.runLater(() -> {
+                    processingDialog.close();
+                    mostrarError("❌ Error en el procesamiento: " + e.getMessage());
+                });
+            }
+        }).start();
+    }
+
+    /**
+     * Muestra las tarjetas de prueba disponibles.
+     */
+    private void mostrarTarjetasPrueba() {
+        String[] tarjetas = PagoService.obtenerTarjetasPrueba();
+        
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Tarjetas de Prueba");
+        alert.setHeaderText("🎯 Usa estas tarjetas para probar el sistema");
+        
+        StringBuilder content = new StringBuilder();
+        content.append("Todas las tarjetas tienen:\n");
+        content.append("• CVV: 123 (456 para Amex)\n");
+        content.append("• Fecha: 12/25 o posterior\n");
+        content.append("• Nombre: Cualquier nombre\n\n");
+        content.append("═══════════════════════════\n\n");
+        
+        for (String tarjeta : tarjetas) {
+            String tipo = PagoService.detectarTipoTarjeta(tarjeta);
+            content.append("🔹 ").append(tipo).append("\n");
+            content.append("   ").append(tarjeta).append("\n\n");
+        }
+        
+        content.append("═══════════════════════════\n");
+        content.append("Tasa de éxito: 95%");
+        
+        TextArea textArea = new TextArea(content.toString());
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+        textArea.setPrefRowCount(15);
+        textArea.setStyle("-fx-font-family: 'Courier New'; -fx-font-size: 11px;");
+        
+        alert.getDialogPane().setContent(textArea);
+        alert.getDialogPane().setMinWidth(450);
+        alert.showAndWait();
     }
 
     private void actualizarTotales(TipoEntrada tipo, int cantidad, Label totalLabel, Label precioUnitLabel) {
